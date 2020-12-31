@@ -33,6 +33,7 @@ namespace My5Paisa.Controllers
             RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
             _logger = logger;
         }
+        
 
         public IActionResult Index()
         {
