@@ -1,0 +1,5 @@
+{
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "bin\\Release\\net5.0\\publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/deaca190-98b2-4a2a-9a12-1d41037609bf/resourceGroups/my5paisa/providers/Microsoft.Web/sites/my5paisa"
+}

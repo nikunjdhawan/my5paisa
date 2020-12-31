@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Hangfire.Dashboard;
 
 namespace My5Paisa
 {
@@ -59,8 +60,21 @@ namespace My5Paisa
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseHangfireDashboard();
+
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new MyAuthorizationFilter() }
+            });
             app.UseHangfireServer();
+        }
+    }
+
+    public class MyAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            return true;
         }
     }
 }
