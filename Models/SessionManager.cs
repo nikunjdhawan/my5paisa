@@ -71,7 +71,7 @@ namespace My5Paisa.Models
 
         }
 
-        public void GetNetPositions()
+        public NetPositionRoot GetNetPositions()
         {
             var client = new RestClient("https://Openapi.5paisa.com/VendorsAPI/Service1.svc/V1/NetPositionNetWise");
             client.Timeout = -1;
@@ -83,9 +83,10 @@ namespace My5Paisa.Models
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
             if (root != null && root.body.NetPositionDetail.Count > 0)
-                Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].BookedPL.ToString());
+                Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
             else
                 Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions");
+            return root;
         }
 
 

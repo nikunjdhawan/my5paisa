@@ -11,3 +11,8 @@
 {
     <p>@message</p>
 } 
+
+@foreach (var item in SecurityManager.Instance.GetNifty50)
+{
+    <p>@item.Scripcode : @item.Name : @item.FullName</p>
+}

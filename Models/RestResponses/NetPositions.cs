@@ -7,13 +7,13 @@ namespace My5Paisa.Models
     public class NetPositionDetail    {
         public int BodQty { get; set; } 
         public double BookedPL { get; set; } 
-        public int BuyAvgRate { get; set; } 
+        public double BuyAvgRate { get; set; } 
         public int BuyQty { get; set; } 
-        public int BuyValue { get; set; } 
+        public double BuyValue { get; set; } 
         public string Exch { get; set; } 
         public string ExchType { get; set; } 
         public double LTP { get; set; } 
-        public int MTOM { get; set; } 
+        public double MTOM { get; set; } 
         public int Multiplier { get; set; } 
         public int NetQty { get; set; } 
         public string OrderFor { get; set; } 
