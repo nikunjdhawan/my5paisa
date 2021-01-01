@@ -13,27 +13,29 @@ namespace My5Paisa.Controllers
     public class TaskManager
     {
         public TaskManager() { }
-        public static void AddMessage()
-        {
-            SessionManager.Instance.AddMessage(SessionManager.Instance.Messages.Count + " : hangfire job " + DateTime.Now.TimeOfDay);
-        }
         public static void GetPositions()
         {
             SessionManager.Instance.GetNetPositions();
         }
+        public static void ScanScripts()
+        {
+            SessionManager.Instance.ScanScripts();
+        }
     }
     public class HomeController : Controller
     {
+        private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
-            SessionManager.Instance.AddMessage(SessionManager.Instance.Messages.Count + " : Before hangfire job " + DateTime.Now.TimeOfDay);
-            BackgroundJob.Enqueue(() => TaskManager.AddMessage());
+            string cron = Cron.Daily(9, 8);
             RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
+            RecurringJob.AddOrUpdate(() => TaskManager.ScanScripts(), Cron.Daily(9, 8), INDIAN_ZONE);
             _logger = logger;
         }
-        
+
 
         public IActionResult Index()
         {

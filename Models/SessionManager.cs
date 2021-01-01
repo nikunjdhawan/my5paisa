@@ -2,6 +2,8 @@ using RestSharp;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Hangfire;
+using System;
+using System.Linq;
 
 namespace My5Paisa.Models
 {
@@ -80,7 +82,49 @@ namespace My5Paisa.Models
             IRestResponse response = client.Execute(request);
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
-            Messages.Add(root.body.NetPositionDetail[0].BookedPL.ToString());
+            if (root != null && root.body.NetPositionDetail.Count > 0)
+                Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].BookedPL.ToString());
+            else
+                Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions");
+        }
+
+
+
+
+
+
+        public void ScanScripts()
+        {
+            var client = new RestClient("https://www1.nseindia.com/live_market/dynaContent/live_analysis/pre_open/nifty.json");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36";
+            request.AddHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7");
+            request.AddHeader("Cookie", "");
+            IRestResponse response = client.Execute(request);
+            Nifty50Root nifty50 = JsonConvert.DeserializeObject(response.Content, typeof(Nifty50Root)) as Nifty50Root;
+
+            int buyOrdersCount = (int)(nifty50.advances / (nifty50.advances + nifty50.declines) * 10);
+
+            foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000).OrderBy(i => i.perChn).Take(buyOrdersCount))
+            {
+                Buy(item.symbol, item.iep);
+            }
+            System.Console.WriteLine("==============");
+            foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
+            {
+                Sell(item.symbol, item.iep);
+            }
+        }
+
+        private static void Buy(string symbol, double price)
+        {
+            SessionManager.Instance.AddMessage("Buy: " + symbol + " at " + price.ToString("f") + " Take Profit at: " + (price * 1.01).ToString("f") + " Stop Loss at: " + (price * 0.99).ToString("f"));
+        }
+
+        private static void Sell(string symbol, double price)
+        {
+            SessionManager.Instance.AddMessage("Sell: " + symbol + " at " + price.ToString("f") + " Take Profit at: " + (price * 0.99).ToString("f") + " Stop Loss at: " + (price * 1.01).ToString("f"));
         }
 
     }
