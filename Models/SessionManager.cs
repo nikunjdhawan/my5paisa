@@ -30,6 +30,35 @@ namespace My5Paisa.Models
             }
         }
 
+        private NetPositionRoot netPositions;
+        public NetPositionRoot NetPositions
+        {
+            get { return netPositions; }
+        }
+
+        private OrderBookRoot orders;
+        public OrderBookRoot Orders
+        {
+            get { 
+                
+                if(orders == null) GetOrderBook();
+                return orders; }
+        }
+
+        private List<TradeCall> trades = new List<TradeCall>();
+        public List<TradeCall> Trades
+        {
+            get { return trades; }
+        }
+
+
+        private double margin;
+        public double Margin
+        {
+            get { return margin; }
+        }
+
+
         public void AddMessage(string msg)
         {
             messages.Add(msg);
@@ -67,6 +96,7 @@ namespace My5Paisa.Models
             IRestResponse response = client.Execute(request);
             MarginRoot root = JsonConvert.DeserializeObject(response.Content, typeof(MarginRoot)) as MarginRoot;
             Messages.Add(root.body.EquityMargin[0].AvailableMargin.ToString());
+            margin = root.body.EquityMargin[0].AvailableMargin;
 
 
         }
@@ -86,6 +116,7 @@ namespace My5Paisa.Models
                 Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
             else
                 Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions");
+            netPositions = root;
             return root;
         }
 
@@ -99,14 +130,15 @@ namespace My5Paisa.Models
             request.AddHeader("Cookie", "PIData=TklLVU5K; 5paisacookie=zdw053xuljn0d5q4potp5djs");
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5POrdBkV2\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-            OrderBookRoot orderBook = JsonConvert.DeserializeObject(response.Content, typeof(OrderBookRoot)) as OrderBookRoot;
-            return orderBook;
+            orders = JsonConvert.DeserializeObject(response.Content, typeof(OrderBookRoot)) as OrderBookRoot;
+            return orders;
         }
 
 
 
         public void ScanScripts()
         {
+            if(SessionManager.Instance.Trades.Count>0) return;
             var client = new RestClient("https://www1.nseindia.com/live_market/dynaContent/live_analysis/pre_open/nifty.json");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -120,23 +152,27 @@ namespace My5Paisa.Models
 
             foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000).OrderBy(i => i.perChn).Take(buyOrdersCount))
             {
-                Buy(item.symbol, item.iep);
+                TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Buy"};
+                Buy(tc);
             }
             System.Console.WriteLine("==============");
             foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
             {
-                Sell(item.symbol, item.iep);
+                TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Sell"};
+                Sell(tc);
             }
         }
 
-        private static void Buy(string symbol, double price)
+        private static void Buy(TradeCall tc)
         {
-            SessionManager.Instance.AddMessage("Buy: " + symbol + " at " + price.ToString("f") + " Take Profit at: " + (price * 1.01).ToString("f") + " Stop Loss at: " + (price * 0.99).ToString("f"));
+            SessionManager.Instance.Trades.Add(tc);
+            SessionManager.Instance.AddMessage("Buy: " + tc.ScriptName + " at " + tc.Price.ToString("f") + " Take Profit at: " + tc.TargetPrice.ToString("c") + " Stop Loss at: " + tc.StopLossPrice.ToString("c"));
         }
 
-        private static void Sell(string symbol, double price)
+        private static void Sell(TradeCall tc)
         {
-            SessionManager.Instance.AddMessage("Sell: " + symbol + " at " + price.ToString("f") + " Take Profit at: " + (price * 0.99).ToString("f") + " Stop Loss at: " + (price * 1.01).ToString("f"));
+            SessionManager.Instance.Trades.Add(tc);
+            SessionManager.Instance.AddMessage("Buy: " + tc.ScriptName + " at " + tc.Price.ToString("f") + " Take Profit at: " + tc.TargetPrice.ToString("c") + " Stop Loss at: " + tc.StopLossPrice.ToString("c"));
         }
 
     }

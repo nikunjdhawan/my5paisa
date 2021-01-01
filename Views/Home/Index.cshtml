@@ -1,19 +1,216 @@
 ﻿@using My5Paisa.Models
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Nikunj Dhawan";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-primary" role="alert">
+                Available Margin: @SessionManager.Instance.Margin.ToString("c")
+            </div>
+            <div class="card">
+                <h5 class="card-header">Positions</h5>
+                <div class="card-body">
+                    <Table class="table table-sm table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Script</th>
+                                <th>Net Qty</th>
+                                <th>Avg Buy</th>
+                                <th>Avg Sell</th>
+                                <th>Booked PL</th>
+                                <th>Unbooked PL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in SessionManager.Instance.NetPositions.body.NetPositionDetail)
+                            {
+                                <tr>
+                                    <td>
+                                        @p.ScripName
+
+                                    </td>
+                                    <td>
+                                        @p.NetQty
+
+                                    </td>
+                                    <td>
+                                        @p.BuyAvgRate.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @p.SellAvgRate.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @p.BookedPL.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @p.MTOM.ToString("c")
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </Table>
+                    <a href="#" class="btn btn-primary">Square Off All</a>
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+                <h5 class="card-header">Orders</h5>
+                <div class="card-body">
+                    <Table class="table table-sm table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Script</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Buy/Sell</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var o in SessionManager.Instance.Orders.body.OrderBookDetail.Where(o =>
+                            o.OrderStatus.Contains("Rejected by Exch") == false).ToList())
+                            {
+                                <tr>
+                                    <td>
+                                        @o.ScripName
+
+                                    </td>
+                                    <td>
+                                        @o.Qty
+
+                                    </td>
+                                    <td>
+                                        @o.Rate.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @o.BuySell
+
+                                    </td>
+                                    <td>
+                                        @o.OrderStatus
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </Table>
+                    <a href="#" class="btn btn-primary">Cancel All</a>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Today's Profit
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <Table class="table table-sm table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Booked</th>
+                                    <th>Un booked</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @SessionManager.Instance.NetPositions.BookedPL.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @SessionManager.Instance.NetPositions.UnBookedPL.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @SessionManager.Instance.NetPositions.TotalPL.ToString("c")
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </h5>
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+                <h5 class="card-header">Trade Calls</h5>
+                <div class="card-body">
+                    <Table class="table table-sm table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Script</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Buy/Sell</th>
+                                <th>Target</th>
+                                <th>Stop Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tc in SessionManager.Instance.Trades)
+                            {
+                                <tr>
+                                    <td>
+                                        @tc.ScriptName
+
+                                    </td>
+                                    <td>
+                                        1
+
+                                    </td>
+                                    <td>
+                                        @tc.Price.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @tc.OrderType
+
+                                    </td>
+                                    <td>
+                                        @tc.TargetPrice.ToString("c")
+
+                                    </td>
+                                    <td>
+                                        @tc.StopLossPrice.ToString("c")
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </Table>
+                    <a href="#" class="btn btn-primary">Clear All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <br />
+            
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <br />
+            
+
+        </div>
+    </div>
 </div>
-@foreach (var message in SessionManager.Instance.Messages)
-{
-    <p>@message</p>
-} 
-
-<h2>Nifty 50</h2>
-@foreach (var item in SecurityManager.Instance.GetNifty50)
-{
-    <p>@item.Scripcode : @item.Name : @item.FullName</p>
-}

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using My5Paisa.Models;
 using Hangfire;
+using System.Globalization;
+using System.Threading;
 
 namespace My5Paisa.Controllers
 {
@@ -24,12 +26,15 @@ namespace My5Paisa.Controllers
     }
     public class HomeController : Controller
     {
+                  
+
         private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
 
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("hi-IN");
             string cron = Cron.Daily(9, 8);
             RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
             RecurringJob.AddOrUpdate(() => TaskManager.ScanScripts(), Cron.Daily(9, 8), INDIAN_ZONE);
@@ -39,10 +44,11 @@ namespace My5Paisa.Controllers
 
         public IActionResult Index()
         {
+            SessionManager.Instance.ScanScripts();
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Nifty50()
         {
             return View();
         }

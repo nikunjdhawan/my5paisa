@@ -9,6 +9,7 @@ namespace My5Paisa.Models
 {
     public class OrderManager
     {
+        double stopLossPercent = 1;
         private OrderManager()
         {
 
@@ -28,30 +29,9 @@ namespace My5Paisa.Models
         }
 
         double targetPercent = 1;
-        public void OpenPosition(int scriptCode, string orderType, double price, double stopLossPercent = 1)
+        public void OpenPosition(TradeCall tradeCall)
         {
-            double stopLoss = 0;
-            double target = 0;
-            if (orderType == "Buy")
-            {
-                stopLoss = price * ((100 - stopLossPercent) / 100);
-                target = price * ((100 + targetPercent) / 100);
-            }
-            else
-            {
-                stopLoss = price * ((100 + stopLossPercent) / 100);
-                target = price * ((100 - targetPercent) / 100);
-            }
-
-            PlaceOrder(scriptCode, orderType, price, stopLoss);
-
-            if (orderType == "Buy")
-                PlaceOrder(scriptCode, "Sell", target);
-            else
-                PlaceOrder(scriptCode, "Buy", target);
-
-
-
+            //PlaceOrder(tradeCall.ScriptCode, tradeCall.OrderType, tradeCall.Price, tradeCall.StopLossPrice);
         }
 
         private bool PlaceOrder(int scriptCode, string orderType, double price, double stopLoss = 0)
@@ -90,9 +70,6 @@ namespace My5Paisa.Models
             IRestResponse response = client.Execute(request);
             Console.WriteLine(response.Content);
         }
-
-
-
         public void BalanceOrders()
         {
             var positions = SessionManager.Instance.GetNetPositions();
@@ -121,7 +98,7 @@ namespace My5Paisa.Models
                         }
                         SessionManager.Instance.AddMessage("Opened the Pending order for Target hit for " + position.ScripName);
                     }
-                    
+
 
                 }
                 else
@@ -137,5 +114,52 @@ namespace My5Paisa.Models
                 }
             }
         }
+    }
+
+    public class TradeCall
+    {
+        private double stopLossPercent = 1;
+        private double targetPercent = 1;
+        public int ScriptCode { get; set; }
+        public string ScriptName { get; set; }
+        public string OrderType { get; set; }
+        public double Price { get; set; }
+
+        public double StopLossPrice
+        {
+            get
+            {
+                if (OrderType == "Buy")
+                {
+                    return Price * ((100 - stopLossPercent) / 100);
+                }
+                if (OrderType == "Sell")
+                {
+                    return Price * ((100 + stopLossPercent) / 100);
+                }
+                return 0;
+
+            }
+
+        }
+
+        public double TargetPrice
+        {
+            get
+            {
+                if (OrderType == "Buy")
+                {
+                    return Price * ((100 + targetPercent) / 100);
+                }
+                if (OrderType == "Sell")
+                {
+                    return Price * ((100 - targetPercent) / 100);
+                }
+                return 0;
+
+            }
+
+        }
+
     }
 }
