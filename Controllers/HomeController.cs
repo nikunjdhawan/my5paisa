@@ -15,7 +15,7 @@ namespace My5Paisa.Controllers
         public TaskManager() { }
         public static void GetPositions()
         {
-            SessionManager.Instance.GetNetPositions();
+            OrderManager.Instance.BalanceOrders();
         }
         public static void ScanScripts()
         {

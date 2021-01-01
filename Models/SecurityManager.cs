@@ -21,7 +21,7 @@ namespace My5Paisa.Models
         List<Security> securities = null;
         private SecurityManager()
         {
-            using (TextFieldParser parser = new TextFieldParser(@"Data/security.csv"))
+            using (TextFieldParser parser = new TextFieldParser(@"wwwroot/Data/security.csv"))
             {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
