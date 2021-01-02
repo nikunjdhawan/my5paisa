@@ -19,14 +19,20 @@ namespace My5Paisa.Controllers
         {
             OrderManager.Instance.BalanceOrders();
         }
-        public static void ScanScripts()
-        {
-            SessionManager.Instance.ScanScripts();
-        }
+
     }
     public class HomeController : Controller
     {
-                  
+        static HomeController()
+        {
+            RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
+            foreach (var item in StrategyManager.AllStrategies)
+            {
+                RecurringJob.AddOrUpdate(() => item.Run(), item.CronExpression, INDIAN_ZONE);
+
+            }
+        }
+
 
         private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
 
@@ -35,16 +41,13 @@ namespace My5Paisa.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("hi-IN");
-            string cron = Cron.Daily(9, 8);
-            RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
-            RecurringJob.AddOrUpdate(() => TaskManager.ScanScripts(), Cron.Daily(9, 8), INDIAN_ZONE);
             _logger = logger;
         }
 
 
         public IActionResult Index()
         {
-            SessionManager.Instance.ScanScripts();
+            // SessionManager.Instance.ScanScripts();
             return View();
         }
 
