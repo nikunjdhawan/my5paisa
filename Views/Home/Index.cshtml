@@ -163,7 +163,32 @@
                         <tbody>
                             @foreach (var tc in SessionManager.Instance.Trades)
                             {
-                                <tr>
+                                var quote = NseQuoteProvider.GetQuote(tc.ScriptName);
+                                string rowClass = "";
+                                if(tc.OrderType == "Buy")
+                                {
+                                    if(quote.High>tc.TargetPrice)
+                                    {
+                                        rowClass = "table-success";
+                                    }
+                                    else if(quote.Low<tc.StopLossPrice)
+                                    {
+                                        rowClass = "table-danger";
+                                    }
+                                }
+                                else
+                                {
+                                    if(quote.Low<tc.TargetPrice)
+                                    {
+                                        rowClass = "table-success";
+                                    }
+                                    else if(quote.High > tc.TargetPrice)
+                                    {
+                                        rowClass = "table-danger";
+                                    }
+                                }
+                                
+                                <tr class='@rowClass'>
                                     <td>
                                         @tc.ScriptName
 
