@@ -9,6 +9,7 @@ using My5Paisa.Models;
 using Hangfire;
 using System.Globalization;
 using System.Threading;
+using Cronos;
 
 namespace My5Paisa.Controllers
 {
@@ -20,6 +21,15 @@ namespace My5Paisa.Controllers
             OrderManager.Instance.BalanceOrders();
         }
 
+        public static void Scan(string id)
+        {
+            StrategyManager.GetById(id).Scan();
+        }
+        public static void Execute(string id)
+        {
+            StrategyManager.GetById(id).Execute();
+        }
+
     }
     public class HomeController : Controller
     {
@@ -28,8 +38,8 @@ namespace My5Paisa.Controllers
             RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
             foreach (var item in StrategyManager.AllStrategies)
             {
-                RecurringJob.AddOrUpdate(() => item.Run(), item.CronExpression, INDIAN_ZONE);
-
+                RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);
+                RecurringJob.AddOrUpdate("Execute-" + item.Name, () => TaskManager.Execute(item.Id), item.ExecuteCronExpression, INDIAN_ZONE);
             }
         }
 

@@ -4,9 +4,9 @@ using RestSharp;
 
 namespace My5Paisa.Models
 {
-    public class MarketOpen : IStrategy
+    public class MarketOpen : StrategyBase
     {
-        public string CronExpression
+        public override string ScanCronExpression
         {
             get
             {
@@ -14,7 +14,15 @@ namespace My5Paisa.Models
             }
         }
 
-        public string Description
+        public override string ExecuteCronExpression
+        {
+            get
+            {
+                return "15 9 * * MON-FRI";
+            }
+        }
+
+        public override string Description
         {
             get
             {
@@ -22,9 +30,25 @@ namespace My5Paisa.Models
             }
         }
 
-        public void Run()
+        public override string Name
         {
-            if(SessionManager.Instance.Trades.Count>0) return;
+            get
+            {
+                return "Pre - Market Open";
+            }
+        }
+
+        public override string Id
+        {
+            get
+            {
+                return "1";
+            }
+        }
+
+        public override void Scan()
+        {
+            if(trades.Count>0) return;
             var client = new RestClient("https://www1.nseindia.com/live_market/dynaContent/live_analysis/pre_open/nifty.json");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -39,25 +63,16 @@ namespace My5Paisa.Models
             foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000).OrderBy(i => i.perChn).Take(buyOrdersCount))
             {
                 TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Buy"};
-                Buy(tc);
+                trades.Add(tc);
             }
             foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
             {
                 TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Sell"};
-                Sell(tc);
+                trades.Add(tc);
             }
         }
 
-        private static void Buy(TradeCall tc)
-        {
-            SessionManager.Instance.Trades.Add(tc);
-            SessionManager.Instance.AddMessage("Buy: " + tc.ScriptName + " at " + tc.Price.ToString("f") + " Take Profit at: " + tc.TargetPrice.ToString("c") + " Stop Loss at: " + tc.StopLossPrice.ToString("c"));
-        }
-
-        private static void Sell(TradeCall tc)
-        {
-            SessionManager.Instance.Trades.Add(tc);
-            SessionManager.Instance.AddMessage("Buy: " + tc.ScriptName + " at " + tc.Price.ToString("f") + " Take Profit at: " + tc.TargetPrice.ToString("c") + " Stop Loss at: " + tc.StopLossPrice.ToString("c"));
-        }
+        
+       
     }
 }

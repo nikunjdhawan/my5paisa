@@ -1,0 +1,90 @@
+@using My5Paisa.Models
+@using Hangfire
+
+<div class="card">
+    <h5 class="card-header">Trade Calls</h5>
+    <div class="card-body">
+
+        @foreach (var s in StrategyManager.AllStrategies)
+        {
+            @s.Name  @s.ExecuteCronExpression
+            <hr/>
+            
+
+            <Table class="table table-sm table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Script</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Buy/Sell</th>
+                        <th>Target</th>
+                        <th>Stop Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tc in s.Trades)
+                    {
+                        string rowClass = "";
+                        @* var quote = NseQuoteProvider.GetQuote(tc.ScriptName);
+                        string rowClass = "";
+                        if (tc.OrderType == "Buy")
+                        {
+                            if (quote.High > tc.TargetPrice)
+                            {
+                                rowClass = "table-success";
+                            }
+                            else if (quote.Low < tc.StopLossPrice)
+                            {
+                                rowClass = "table-danger";
+                            }
+                        }
+                        else
+                        {
+                            if (quote.Low < tc.TargetPrice)
+                            {
+                                rowClass = "table-success";
+                            }
+                            else if (quote.High > tc.TargetPrice)
+                            {
+                                rowClass = "table-danger";
+                            }
+                        } *@
+
+                        <tr class='@rowClass'>
+                            <td>
+                                @tc.ScriptName
+
+                            </td>
+                            <td>
+                                1
+
+                            </td>
+                            <td>
+                                @tc.Price.ToString("c")
+
+                            </td>
+                            <td>
+                                @tc.OrderType
+
+                            </td>
+                            <td>
+                                @tc.TargetPrice.ToString("c")
+
+                            </td>
+                            <td>
+                                @tc.StopLossPrice.ToString("c")
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </Table>
+            <a href="#" class="btn btn-primary">Clear All</a>
+            
+        }
+
+
+    </div>
+</div>
