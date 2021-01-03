@@ -7,9 +7,28 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <div class="alert alert-primary" role="alert">
-                Available Margin: @SessionManager.Instance.Margin.ToString("c")
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">Available Margin: @SessionManager.Instance.Margin.ToString("c")</div>
+                        <div class="col text-right">
+                            @if(SessionManager.Instance.IsLive)
+                            {
+                                <a class="btn btn-success" asp-controller="Home" asp-action="Stop"
+                                role="button">Live</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-danger" asp-controller="Home" asp-action="GoLive"
+                                role="button">Stopped</a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
             </div>
+            <br />
+
             <div class="card">
                 <h5 class="card-header">Positions</h5>
                 <div class="card-body">
@@ -60,7 +79,7 @@
                     <a href="#" class="btn btn-primary">Square Off All</a>
                 </div>
             </div>
-            <br/>
+            <br />
             <div class="card">
                 <h5 class="card-header">Orders</h5>
                 <div class="card-body">
@@ -145,14 +164,14 @@
                     </h5>
                 </div>
             </div>
-            <br/>
+            <br />
             <partial name="_PendingTrades"></partial>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <br />
-            
+
 
         </div>
     </div>
@@ -160,7 +179,7 @@
     <div class="row">
         <div class="col">
             <br />
-            
+
 
         </div>
     </div>

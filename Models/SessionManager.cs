@@ -30,6 +30,8 @@ namespace My5Paisa.Models
             }
         }
 
+        public bool IsLive = false;
+
         private NetPositionRoot netPositions;
         public NetPositionRoot NetPositions
         {

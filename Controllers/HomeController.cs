@@ -61,6 +61,18 @@ namespace My5Paisa.Controllers
             return View();
         }
 
+        public IActionResult GoLive()
+        {
+            SessionManager.Instance.IsLive = true;
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Stop()
+        {
+            SessionManager.Instance.IsLive = false;
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Nifty50()
         {
             return View();

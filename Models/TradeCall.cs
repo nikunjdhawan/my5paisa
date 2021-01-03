@@ -4,7 +4,15 @@ namespace My5Paisa.Models
     {
         private double stopLossPercent = 0.5;
         private double targetPercent = 1;
-        public int ScriptCode { get; set; }
+        private int scriptCode = -1;
+        public int ScriptCode
+        {
+            get { 
+                return (scriptCode == -1)? SecurityManager.Instance.GetCode(ScriptName) : scriptCode;
+             }
+            set { scriptCode = value; }
+        }
+        
         public string ScriptName { get; set; }
         public string OrderType { get; set; }
         public double Price { get; set; }

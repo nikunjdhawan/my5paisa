@@ -17,7 +17,7 @@ namespace My5Paisa.Models
                 return instance;
             }
         }
-        private string[] nifty50 = "526,547,694,881,910,1232,1330,1333,1348,1363,1394,1594,1624,1660,1922,2031,2475,2885,3045,3103,3351,3456,3499,3506,3787,4717,4963,5258,5900,7229,10604,10940,10999,11287,11483,11532,11536,11630,11723,13538,14977,15083,16669,16675,17963,20374,21808".Split(',');
+        private int[] nifty50 = {526,547,694,881,910,1232,1330,1333,1348,1363,1394,1594,1624,1660,1922,2031,2475,2885,3045,3103,3351,3456,3499,3506,3787,4717,4963,5258,5900,7229,10604,10940,10999,11287,11483,11532,11536,11630,11723,13538,14977,15083,16669,16675,17963,20374,21808};
         List<Security> securities = null;
         private SecurityManager()
         {
@@ -26,6 +26,7 @@ namespace My5Paisa.Models
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
                 securities = new List<Security>();
+                parser.ReadFields();
                 while (!parser.EndOfData)
                 {
                     //Processing row
@@ -33,6 +34,14 @@ namespace My5Paisa.Models
                     securities.Add(new Security(fields));
                 }
             }
+        }
+
+        public int GetCode(string name, bool isNifty = true)
+        {
+            if (isNifty)
+                return GetNifty50.Where(n => n.Name == name).First().Scripcode;
+            else
+                return securities.Where(n => n.Name == name).First().Scripcode;
         }
 
         private List<Security> nifty50list = null;
@@ -52,9 +61,10 @@ namespace My5Paisa.Models
 
         public Security(string[] args)
         {
+            
             this.Exch = args[0];
             this.ExchType = args[1];
-            this.Scripcode = args[2];
+            this.Scripcode = int.Parse(args[2]);
             this.Name = args[3];
             this.Series = args[4];
             this.Expiry = args[5];
@@ -66,7 +76,7 @@ namespace My5Paisa.Models
         }
         public string Exch { get; set; }
         public string ExchType { get; set; }
-        public string Scripcode { get; set; }
+        public int Scripcode { get; set; }
         public string Name { get; set; }
         public string Series { get; set; }
         public string Expiry { get; set; }

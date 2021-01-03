@@ -30,7 +30,8 @@ namespace My5Paisa.Models
         double targetPercent = 1;
         public void OpenPosition(TradeCall tradeCall)
         {
-            //PlaceOrder(tradeCall.ScriptCode, tradeCall.OrderType, tradeCall.Price, tradeCall.StopLossPrice);
+            if(SessionManager.Instance.IsLive)
+                PlaceOrder(tradeCall.ScriptCode, tradeCall.OrderType, tradeCall.Price, tradeCall.StopLossPrice);
         }
 
         private bool PlaceOrder(int scriptCode, string orderType, double price, double stopLoss = 0)
