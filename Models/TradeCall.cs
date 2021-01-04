@@ -50,11 +50,11 @@ namespace My5Paisa.Models
             {
                 if (OrderType == "Buy")
                 {
-                    return Price * ((100 + targetPercent) / 100);
+                    return Math.Round(Price * ((100 + targetPercent) / 100),1);
                 }
                 if (OrderType == "Sell")
                 {
-                    return Price * ((100 - targetPercent) / 100);
+                    return Math.Round(Price * ((100 - targetPercent) / 100),1);
                 }
                 return 0;
 
