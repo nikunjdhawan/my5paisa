@@ -49,8 +49,6 @@ namespace My5Paisa.Models
 
         public override void Scan()
         {
-            // var httpClient = new HttpClient();
-            // string resp = httpClient.GetStringAsync("https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%2050").Result;
             if (trades.Count > 0) return;
             var client = new RestClient("https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json");
             client.Timeout = -1;
@@ -64,7 +62,7 @@ namespace My5Paisa.Models
             request.AddHeader("upgrade-insecure-requests", "1");
             request.AddHeader("Cookie", "");
             IRestResponse response = client.Execute(request);
-            while(response.Content.StartsWith("{") == false)
+            while (response.Content.StartsWith("{") == false)
             {
                 response = client.Execute(request);
             }
@@ -76,15 +74,26 @@ namespace My5Paisa.Models
 
             int buyOrdersCount = (int)(nifty50.advances / (nifty50.advances + nifty50.declines) * 10);
 
-            foreach (var item in nifty50.data.Where(i => i.open == i.low && i.ltP < 5000).Take(buyOrdersCount))
+            foreach (var item in nifty50.data.Where(i => i.ltP < 5000))
             {
-                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.high, OrderType = "Buy" };
-                trades.Add(tc);
+                var diff = item.open - item.low;
+                var diffP = diff / item.open * 100;
+                if (diffP >= -0.1 && diffP < 0.1)
+                {
+                    TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.high, OrderType = "Buy" };
+                    trades.Add(tc);
+                }
             }
             foreach (var item in nifty50.data.Where(i => i.open == i.high && i.ltP < 5000).Take(10 - buyOrdersCount))
             {
-                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.low, OrderType = "Sell" };
-                trades.Add(tc);
+                var diff = item.open - item.high;
+                var diffP = diff / item.open * 100;
+                if (diffP >= -0.1 && diffP < 0.1)
+                {
+                    TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.low, OrderType = "Sell" };
+                    trades.Add(tc);
+                }
+
             }
         }
     }

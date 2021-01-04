@@ -1,3 +1,5 @@
+using System;
+
 namespace My5Paisa.Models
 {
     public class TradeCall
@@ -7,27 +9,34 @@ namespace My5Paisa.Models
         private int scriptCode = -1;
         public int ScriptCode
         {
-            get { 
-                return (scriptCode == -1)? SecurityManager.Instance.GetCode(ScriptName) : scriptCode;
-             }
+            get
+            {
+                return (scriptCode == -1) ? SecurityManager.Instance.GetCode(ScriptName) : scriptCode;
+            }
             set { scriptCode = value; }
         }
-        
+
         public string ScriptName { get; set; }
         public string OrderType { get; set; }
-        public double Price { get; set; }
 
+        private double price;
+        public double Price
+        {
+            get { return Math.Round(price, 1); }
+            set { price = value; }
+        }
+        
         public double StopLossPrice
         {
             get
             {
                 if (OrderType == "Buy")
                 {
-                    return Price * ((100 - stopLossPercent) / 100);
+                    return Math.Round(Price * ((100 - stopLossPercent) / 100), 1);
                 }
                 if (OrderType == "Sell")
                 {
-                    return Price * ((100 + stopLossPercent) / 100);
+                    return Math.Round(Price * ((100 + stopLossPercent) / 100), 1);
                 }
                 return 0;
 

@@ -47,11 +47,11 @@ namespace My5Paisa.Models
                 return orders; }
         }
 
-        private List<TradeCall> trades = new List<TradeCall>();
-        public List<TradeCall> Trades
-        {
-            get { return trades; }
-        }
+        // private List<TradeCall> trades = new List<TradeCall>();
+        // public List<TradeCall> Trades
+        // {
+        //     get { return trades; }
+        // }
 
 
         private double margin;

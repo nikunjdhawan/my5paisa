@@ -18,7 +18,7 @@ namespace My5Paisa.Controllers
         public TaskManager() { }
         public static void GetPositions()
         {
-            OrderManager.Instance.BalanceOrders();
+            SessionManager.Instance.GetNetPositions();
         }
 
         public static void Scan(string id)
@@ -30,12 +30,18 @@ namespace My5Paisa.Controllers
             StrategyManager.GetById(id).Execute();
         }
 
+        public static void Ping()
+        {
+            WebSessionManager.Ping();
+        }
+
     }
     public class HomeController : Controller
     {
         static HomeController()
         {
             RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
+            RecurringJob.AddOrUpdate(() => TaskManager.Ping(), Cron.Minutely);
             foreach (var item in StrategyManager.AllStrategies)
             {
                 RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);

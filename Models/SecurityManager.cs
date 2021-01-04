@@ -17,7 +17,7 @@ namespace My5Paisa.Models
                 return instance;
             }
         }
-        private int[] nifty50 = {526,547,694,881,910,1232,1330,1333,1348,1363,1394,1594,1624,1660,1922,2031,2475,2885,3045,3103,3351,3456,3499,3506,3787,4717,4963,5258,5900,7229,10604,10940,10999,11287,11483,11532,11536,11630,11723,13538,14977,15083,16669,16675,17963,20374,21808};
+        private int[] nifty50 = {467,236,526,547,694,881,910,1232,1330,1333,1348,1363,1394,1594,1624,1660,1922,2031,2475,2885,3045,3103,3351,3456,3499,3506,3787,4717,4963,5258,5900,7229,10604,10940,10999,11287,11483,11532,11536,11630,11723,13538,14977,15083,16669,16675,17963,20374,21808};
         List<Security> securities = null;
         private SecurityManager()
         {
@@ -36,10 +36,11 @@ namespace My5Paisa.Models
             }
         }
 
-        public int GetCode(string name, bool isNifty = true)
+        public int GetCode(string name)
         {
-            if (isNifty)
-                return GetNifty50.Where(n => n.Name == name).First().Scripcode;
+            var sec = GetNifty50.Where(n => n.Name == name).FirstOrDefault();
+            if(sec != null)
+                return sec.Scripcode;            
             else
                 return securities.Where(n => n.Name == name).First().Scripcode;
         }

@@ -23,7 +23,7 @@ namespace My5Paisa.Models
         public string xDt { get; set; } 
         public string cAct { get; set; } 
         public double previousClose { get; set; } 
-        public double dayEndClose { get; set; } 
+        public string dayEndClose { get; set; } 
         public double iislPtsChange { get; set; } 
         public double iislPercChange { get; set; } 
         public double yPC { get; set; } 

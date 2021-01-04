@@ -12,7 +12,7 @@ namespace My5Paisa.Models
         public int GHVPer { get; set; } 
         public double GrossMargin { get; set; } 
         public int Lb { get; set; } 
-        public int Mgn4PendOrd { get; set; } 
+        public double Mgn4PendOrd { get; set; } 
         public double Mgn4Position { get; set; } 
         public int NDDebit { get; set; } 
         public int OptionsMtoMLoss { get; set; } 
