@@ -1,9 +1,6 @@
 using RestSharp;
-using System.Collections.Generic;
 using Newtonsoft.Json;
-using Hangfire;
 using System;
-using System.Linq;
 using System.Net.Http;
 
 namespace My5Paisa.Models
@@ -22,7 +19,7 @@ namespace My5Paisa.Models
             handler = new HttpClientHandler();
             handler.CookieContainer = new System.Net.CookieContainer();
             httpClient = new HttpClient(handler);
-            
+
             for (int i = 0; i < 10; i++)
             {
                 ApiLogin();
@@ -51,30 +48,11 @@ namespace My5Paisa.Models
                     resps = httpClient.GetStringAsync("https://trade.5paisa.com/trade/home").Result;
                     return;
                 }
-                
+
             }
             SessionManager.Instance.AddMessage("Login Failed 10 times");
         }
 
-        // public static void Ping()
-        // {
-        //     var request = new HttpRequestMessage()
-        //     {
-        //         RequestUri = new Uri("https://trade.5paisa.com/Trade/Home/IncreaseMobileServiceSession?ClientCode=54965884"),
-        //         Method = HttpMethod.Post,
-        //     };
-
-        //     var r = httpClient.Send(request);
-        //     var sessionresponse = r.Content.ReadAsStringAsync().Result;
-        //     SessionManager.Instance.AddMessage(sessionresponse);
-        //     if (sessionresponse.IndexOf("Valid Session") < 0)
-        //     {
-        //         SessionManager.Instance.AddMessage("Session failed, reopening");
-        //         Login();
-        //     }
-        // }
-
-        
 
         public static void PlaceOrder(TradeCall tradeCall)
         {
@@ -82,7 +60,7 @@ namespace My5Paisa.Models
             string today = doff.ToUnixTimeSeconds().ToString();
             string tomorrow = doff.AddDays(1).ToUnixTimeSeconds().ToString();
             string orderType = tradeCall.OrderType;
-            string bracketstr = "RequestType=P&BuySell="+tradeCall.OrderType+"&Symbol=&FullName="+tradeCall.ScriptName+"&Name="+tradeCall.ScriptName+"&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice="+tradeCall.Price+"&TriggerRate=0&IOC=false&ISSL=false&ScripCode="+tradeCall.ScriptCode+"&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate("+today+")%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=0&OrderValue="+tradeCall.Price+"&ExchOrderID=&ExchOrderTime=%2FDate("+today+")%2F&AHPlaced=false&DelvIntra=&LastRate=0&LimitPriceforSL=0&TriggerPriceforSL="+tradeCall.StopLossPrice+"&TrailingSL=0&LimitPriceforProfitOrder="+tradeCall.TargetPrice+"&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N";
+            string bracketstr = "RequestType=P&BuySell=" + tradeCall.OrderType + "&Symbol=&FullName=" + tradeCall.ScriptName + "&Name=" + tradeCall.ScriptName + "&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=" + tradeCall.Price + "&TriggerRate=0&IOC=false&ISSL=false&ScripCode=" + tradeCall.ScriptCode + "&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate(" + today + ")%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=0&OrderValue=" + tradeCall.Price + "&ExchOrderID=&ExchOrderTime=%2FDate(" + today + ")%2F&AHPlaced=false&DelvIntra=&LastRate=0&LimitPriceforSL=0&TriggerPriceforSL=" + tradeCall.StopLossPrice + "&TrailingSL=0&LimitPriceforProfitOrder=" + tradeCall.TargetPrice + "&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N";
             var request = new HttpRequestMessage()
             {
                 RequestUri = new Uri("https://trade.5paisa.com/Trade/Orders/OrderProceed?" + bracketstr),
