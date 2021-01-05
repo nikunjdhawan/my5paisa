@@ -60,19 +60,16 @@ namespace My5Paisa.Models
 
             int buyOrdersCount = (int)(nifty50.advances / (nifty50.advances + nifty50.declines) * 10);
 
-            foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000).OrderBy(i => i.perChn).Take(buyOrdersCount))
+            foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000 && i.iep > 1000).OrderBy(i => i.perChn).Take(buyOrdersCount))
             {
                 TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Buy"};
                 trades.Add(tc);
             }
-            foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
+            foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000 && i.iep > 1000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
             {
                 TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Sell"};
                 trades.Add(tc);
             }
         }
-
-        
-       
     }
 }

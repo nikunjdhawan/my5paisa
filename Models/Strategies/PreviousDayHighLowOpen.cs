@@ -74,7 +74,7 @@ namespace My5Paisa.Models
 
             int buyOrdersCount = (int)(nifty50.advances / (nifty50.advances + nifty50.declines) * 10);
 
-            foreach (var item in nifty50.data.Where(i => i.ltP < 5000))
+            foreach (var item in nifty50.data.Where(i => i.ltP < 5000 && i.ltP > 1000))
             {
                 var diff = item.open - item.low;
                 var diffP = diff / item.open * 100;
@@ -84,7 +84,7 @@ namespace My5Paisa.Models
                     trades.Add(tc);
                 }
             }
-            foreach (var item in nifty50.data.Where(i => i.open == i.high && i.ltP < 5000).Take(10 - buyOrdersCount))
+            foreach (var item in nifty50.data.Where(i => i.ltP < 5000 && i.ltP > 1000))
             {
                 var diff = item.open - item.high;
                 var diffP = diff / item.open * 100;

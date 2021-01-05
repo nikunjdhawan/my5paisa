@@ -28,7 +28,7 @@ namespace My5Paisa.Models
             foreach (var tc in trades)
             {
                 var c = tc.ScriptCode;
-                OrderManager.Instance.OpenPosition(tc);
+                OrderManager.OpenPosition(tc);
             }
             trades.Clear();
         }
@@ -48,7 +48,7 @@ namespace My5Paisa.Models
         }
         static StrategyManager()
         {
-            // allStrategies.Add(new MarketOpen());
+            allStrategies.Add(new MarketOpen());
             allStrategies.Add(new PreviousDayHighLowOpen());
         }
 

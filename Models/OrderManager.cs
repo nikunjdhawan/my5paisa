@@ -7,31 +7,27 @@ using System.Linq;
 
 namespace My5Paisa.Models
 {
-    public class OrderManager
+    public static class OrderManager
     {
-        private OrderManager()
+        private static List<string> trades = new List<string>();
+        static OrderManager()
         {
 
         }
-        private static OrderManager instance = null;
-        public static OrderManager Instance
+
+        public static void NewDay()
         {
-            get
-            {
-                lock (typeof(OrderManager))
-                {
-                    if (instance != null) return instance;
-                    instance = new OrderManager();
-                    return instance;
-                }
-            }
+            trades = new List<string>();
         }
 
-        public void OpenPosition(TradeCall tradeCall)
+        public static void OpenPosition(TradeCall tradeCall)
         {
+            if(trades.Contains(tradeCall.ScriptName))
+                return;
             // if(tradeCall.ScriptName == "COALINDIA")
             if(SessionManager.Instance.IsLive)
                 WebSessionManager.PlaceOrder(tradeCall);
+            trades.Add(tradeCall.ScriptName);
         }        
     }
 }

@@ -32,14 +32,18 @@ namespace My5Paisa.Controllers
             StrategyManager.GetById(id).Execute();
         }
 
-        
-
+        public static void NewDay()
+        {
+            OrderManager.NewDay();
+        }
     }
     public class HomeController : Controller
     {
         static HomeController()
         {
-            RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely);
+            string newDay = "0 7 * * MON-FRI";
+            RecurringJob.AddOrUpdate(() => TaskManager.NewDay(), newDay, INDIAN_ZONE);
+            RecurringJob.AddOrUpdate(() => TaskManager.GetPositions(), Cron.Minutely, INDIAN_ZONE);
             foreach (var item in StrategyManager.AllStrategies)
             {
                 RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);

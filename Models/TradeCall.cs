@@ -4,8 +4,8 @@ namespace My5Paisa.Models
 {
     public class TradeCall
     {
-        private double stopLossPercent = 1;
-        private double targetPercent = 2;
+        private double stopLossPercent = 0.6;
+        private double targetPercent = 1.2;
         private int scriptCode = -1;
         public int ScriptCode
         {
@@ -25,7 +25,15 @@ namespace My5Paisa.Models
             get { return Math.Round(price, 1); }
             set { price = value; }
         }
-        
+
+        public int Qty
+        {
+            get
+            {
+                return (int)(10000 / Price);
+            }
+        }
+
         public double StopLossPrice
         {
             get
@@ -50,11 +58,11 @@ namespace My5Paisa.Models
             {
                 if (OrderType == "Buy")
                 {
-                    return Math.Round(Price * ((100 + targetPercent) / 100),1);
+                    return Math.Round(Price * ((100 + targetPercent) / 100), 1);
                 }
                 if (OrderType == "Sell")
                 {
-                    return Math.Round(Price * ((100 - targetPercent) / 100),1);
+                    return Math.Round(Price * ((100 - targetPercent) / 100), 1);
                 }
                 return 0;
 
