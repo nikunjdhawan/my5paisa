@@ -27,9 +27,9 @@ namespace My5Paisa.Models
             }
         }
 
-        double targetPercent = 1;
         public void OpenPosition(TradeCall tradeCall)
         {
+            // if(tradeCall.ScriptName == "COALINDIA")
             if(SessionManager.Instance.IsLive)
                 WebSessionManager.PlaceOrder(tradeCall);
         }        

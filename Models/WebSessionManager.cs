@@ -90,7 +90,11 @@ namespace My5Paisa.Models
             };
             var r = httpClient.Send(request);
             var strResponse = r.Content.ReadAsStringAsync().Result;
+            SessionManager.Instance.AddMessage("*****************Start of Order***************************");
+            SessionManager.Instance.AddMessage(bracketstr);
+            SessionManager.Instance.AddMessage("------------------------Response---------------------------------");
             SessionManager.Instance.AddMessage(strResponse);
+            SessionManager.Instance.AddMessage("*****************End of Order***************************");
         }
 
         private static void ApiLogin()
