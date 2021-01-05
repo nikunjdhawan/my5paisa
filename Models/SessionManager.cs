@@ -87,7 +87,7 @@ namespace My5Paisa.Models
             Messages.Add(loginRoot.body.EmailId);
         }
 
-        private void GetMargin()
+        public void GetMargin()
         {
             var client = new RestClient("https://Openapi.5paisa.com/VendorsAPI/Service1.svc/V3/Margin");
             client.Timeout = -1;
@@ -114,11 +114,15 @@ namespace My5Paisa.Models
             IRestResponse response = client.Execute(request);
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
-            if (root != null && root.body.NetPositionDetail.Count > 0)
-                Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
+            if (root != null && root.body!=null)
+            {
+                netPositions = root;
+                if(root.body.NetPositionDetail.Count > 0)
+                    Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
+            }
             else
-                Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions");
-            netPositions = root;
+                Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions response...");
+
             return root;
         }
 

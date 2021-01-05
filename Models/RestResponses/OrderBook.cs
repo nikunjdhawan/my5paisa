@@ -30,10 +30,10 @@ namespace My5Paisa.Models
         public string RequestType { get; set; }
         public double SLTriggerRate { get; set; }
         public string SLTriggered { get; set; }
-        public int SMOProfitRate { get; set; }
-        public int SMOSLLimitRate { get; set; }
-        public int SMOSLTriggerRate { get; set; }
-        public int SMOTrailingSL { get; set; }
+        public double SMOProfitRate { get; set; }
+        public double SMOSLLimitRate { get; set; }
+        public double SMOSLTriggerRate { get; set; }
+        public double SMOTrailingSL { get; set; }
         public int ScripCode { get; set; }
         public string ScripName { get; set; }
         public int TerminalId { get; set; }

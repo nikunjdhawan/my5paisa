@@ -15,13 +15,14 @@ namespace My5Paisa.Models
         private static HttpClient httpClient;
         static WebSessionManager()
         {
+            Login();
+        }
+        public static void Login()
+        {
             handler = new HttpClientHandler();
             handler.CookieContainer = new System.Net.CookieContainer();
             httpClient = new HttpClient(handler);
-            Login();
-        }
-        private static void Login()
-        {
+            
             for (int i = 0; i < 10; i++)
             {
                 ApiLogin();
@@ -55,23 +56,23 @@ namespace My5Paisa.Models
             SessionManager.Instance.AddMessage("Login Failed 10 times");
         }
 
-        public static void Ping()
-        {
-            var request = new HttpRequestMessage()
-            {
-                RequestUri = new Uri("https://trade.5paisa.com/Trade/Home/IncreaseMobileServiceSession?ClientCode=54965884"),
-                Method = HttpMethod.Post,
-            };
+        // public static void Ping()
+        // {
+        //     var request = new HttpRequestMessage()
+        //     {
+        //         RequestUri = new Uri("https://trade.5paisa.com/Trade/Home/IncreaseMobileServiceSession?ClientCode=54965884"),
+        //         Method = HttpMethod.Post,
+        //     };
 
-            var r = httpClient.Send(request);
-            var sessionresponse = r.Content.ReadAsStringAsync().Result;
-            SessionManager.Instance.AddMessage(sessionresponse);
-            if (sessionresponse.IndexOf("Valid Session") < 0)
-            {
-                SessionManager.Instance.AddMessage("Session failed, reopening");
-                Login();
-            }
-        }
+        //     var r = httpClient.Send(request);
+        //     var sessionresponse = r.Content.ReadAsStringAsync().Result;
+        //     SessionManager.Instance.AddMessage(sessionresponse);
+        //     if (sessionresponse.IndexOf("Valid Session") < 0)
+        //     {
+        //         SessionManager.Instance.AddMessage("Session failed, reopening");
+        //         Login();
+        //     }
+        // }
 
         
 
@@ -88,7 +89,8 @@ namespace My5Paisa.Models
                 Method = HttpMethod.Post,
             };
             var r = httpClient.Send(request);
-            SessionManager.Instance.AddMessage(r.Content.ReadAsStringAsync().Result);
+            var strResponse = r.Content.ReadAsStringAsync().Result;
+            SessionManager.Instance.AddMessage(strResponse);
         }
 
         private static void ApiLogin()

@@ -24,6 +24,7 @@ namespace My5Paisa.Models
 
         public virtual void Execute()
         {
+            WebSessionManager.Login();
             foreach (var tc in trades)
             {
                 var c = tc.ScriptCode;

@@ -4,8 +4,8 @@ namespace My5Paisa.Models
 {
     public class TradeCall
     {
-        private double stopLossPercent = 0.5;
-        private double targetPercent = 1;
+        private double stopLossPercent = 1;
+        private double targetPercent = 2;
         private int scriptCode = -1;
         public int ScriptCode
         {
