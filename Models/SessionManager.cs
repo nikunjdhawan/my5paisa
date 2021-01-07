@@ -101,10 +101,8 @@ namespace My5Paisa.Models
             MarginRoot root = JsonConvert.DeserializeObject(response.Content, typeof(MarginRoot)) as MarginRoot;
             if (root == null || root.body == null || root.body.EquityMargin == null || root.body.EquityMargin.Count == 0)
                 return;
-            Messages.Add(root.body.EquityMargin[0].AvailableMargin.ToString());
+            // Messages.Add(root.body.EquityMargin[0].AvailableMargin.ToString());
             margin = root.body.EquityMargin[0].AvailableMargin;
-
-
         }
 
         public NetPositionRoot GetNetPositions()
@@ -116,16 +114,18 @@ namespace My5Paisa.Models
             request.AddHeader("Cookie", "PIData=TklLVU5K; 5paisacookie=zdw053xuljn0d5q4potp5djs; JwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjU0OTY1ODg0IiwibmJmIjoxNjA5NDAyMTg0LCJleHAiOjE2MTcxNzgxODQsImlhdCI6MTYwOTQwMjE4NH0.cKnFAQZw2LupT4hKUyPMLlKiTtkMaeGabLvvjKWn2-Q");
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5PNPNWV1\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
+            if(response.Content.StartsWith("<")) {return netPositions;}
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
             if (root != null && root.body != null)
             {
                 netPositions = root;
-                if (root.body.NetPositionDetail.Count > 0)
-                    Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
             }
             else
+            {
                 Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions response...");
+                return netPositions;
+            }
 
             return root;
         }

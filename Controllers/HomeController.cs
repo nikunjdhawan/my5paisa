@@ -44,7 +44,8 @@ namespace My5Paisa.Controllers
 
         public static void StartMarketFeed()
         {
-            MarketFeedManager.Start();
+            Thread t = new Thread(new ThreadStart(MarketFeedManager.Start));
+            t.Start();
         }
 
     }
@@ -58,9 +59,8 @@ namespace My5Paisa.Controllers
             foreach (var item in StrategyManager.AllStrategies)
             {
                 RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);
-                RecurringJob.AddOrUpdate("Execute-" + item.Name, () => TaskManager.Trigger(item.Id), item.TriggerCronExpression, INDIAN_ZONE);
+                RecurringJob.AddOrUpdate("Trigger-" + item.Name, () => TaskManager.Trigger(item.Id), item.TriggerCronExpression, INDIAN_ZONE);
             }
-            Hangfire.BackgroundJob.Enqueue(() => TaskManager.StartMarketFeed());
             RecurringJob.AddOrUpdate(() => TaskManager.Execute(), Cron.Minutely, INDIAN_ZONE);
         }
 
@@ -85,12 +85,20 @@ namespace My5Paisa.Controllers
         public IActionResult GoLive()
         {
             SessionManager.Instance.IsLive = true;
+            TaskManager.StartMarketFeed();
             return RedirectToAction("Index");
         }
 
         public IActionResult Stop()
         {
             SessionManager.Instance.IsLive = false;
+            MarketFeedManager.Stop();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult ClearAllTrades()
+        {
+            StrategyManager.ClearAllTrades();
             return RedirectToAction("Index");
         }
 

@@ -81,20 +81,19 @@ namespace My5Paisa.Models
 
             data.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = 15083 });
             data.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = 1330 });
-
-
-
         }
 
         public static void AddScript(int scriptCode)
         {
             request.MarketFeedData.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = scriptCode });
             string msg = SimpleJson.SerializeObject(request);
-            client.Send(msg);
+            if(client!=null)
+                client.Send(msg);
         }
 
         public static void Start()
         {
+            ExitEvent.Reset();
             var url = new Uri("wss://openfeed.5paisa.com/Feeds/api/chat?Value1=zdw053xuljn0d5q4potp5djs");
             var factory = new Func<ClientWebSocket>(() => InitSocket());
             using (client = new WebsocketClient(url, factory))
@@ -111,6 +110,8 @@ namespace My5Paisa.Models
                 client.Send(msg);
                 ExitEvent.WaitOne();
             }
+            client = null;
+            SessionManager.Instance.AddMessage("*************Closing Market Feed*****************");
 
         }
 
@@ -120,18 +121,20 @@ namespace My5Paisa.Models
             {
                 SessionManager.Instance.AddMessage($"Message received: {msg}");
                 MarketFeedResponse[] response = JsonConvert.DeserializeObject<MarketFeedResponse[]>(msg);
-                foreach (var s in StrategyManager.AllStrategies)
+                for (int i = 0; i < StrategyManager.AllStrategies.Count; i++)
                 {
-                    foreach (var tc in s.Trades)
+                    for (int j = 0; j < StrategyManager.AllStrategies[i].Trades.Count; j++)
                     {
+                        var tc = StrategyManager.AllStrategies[i].Trades[j];
                         if (tc.ScriptCode == response[0].Token)
                             tc.LTP = response[0].LastRate;
+                        
                     }
+                    
                 }
             }
             catch (System.Exception ex)
             {
-
                 SessionManager.Instance.AddMessage($"Exception: {ex.ToString()}");
             }
 
@@ -139,7 +142,6 @@ namespace My5Paisa.Models
         public static void Stop()
         {
             ExitEvent.Set();
-
         }
 
     }

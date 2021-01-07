@@ -43,6 +43,16 @@ namespace My5Paisa.Models
                 return allStrategies;
             }
         }
+
+        public static void ClearAllTrades()
+        {
+            foreach (var item in allStrategies)
+            {
+                item.Trades.Clear();
+            }
+
+        }
+
         static StrategyManager()
         {
             // allStrategies.Add(new MarketOpen());

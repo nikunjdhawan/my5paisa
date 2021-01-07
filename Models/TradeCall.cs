@@ -109,7 +109,7 @@ namespace My5Paisa.Models
                     if(StopLossPrice > Price) return false;
                     if(LTP < StopLossPrice) return false;
                     if(TriggerPrice>0 && TriggerPrice < LTP) return false;
-                    if(LTP = 0) return false;
+                    if(LTP == 0) return false;
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace My5Paisa.Models
                     if(StopLossPrice < Price) return false;
                     if(LTP > StopLossPrice) return false;
                     if(TriggerPrice>0 && TriggerPrice > LTP) return false;
-                    if(LTP = 0) return false;
+                    if(LTP == 0) return false;
                 }
                 return true;
             }

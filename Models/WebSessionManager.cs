@@ -57,7 +57,7 @@ namespace My5Paisa.Models
         }
 
 
-        public static void PlaceOrder(TradeCall tradeCall)
+        public static bool PlaceOrder(TradeCall tradeCall)
         {
             var doff = new DateTimeOffset(DateTime.Today);
             string today = doff.ToUnixTimeSeconds().ToString();
@@ -78,6 +78,7 @@ namespace My5Paisa.Models
             SessionManager.Instance.AddMessage("------------------------Response---------------------------------");
             SessionManager.Instance.AddMessage(strResponse);
             SessionManager.Instance.AddMessage("*****************End of Order***************************");
+            return strResponse.Contains("Xmitted");
         }
 
         private static string GetRequest(TradeCall tradeCall)

@@ -7,7 +7,7 @@
 
         @foreach (var s in StrategyManager.AllStrategies)
         {
-            @s.Name  @s.ExecuteCronExpression
+            @s.Name  @s.TriggerCronExpression
             <hr/>
             
 
@@ -20,37 +20,14 @@
                         <th>Target</th>
                         <th>Stop Loss</th>
                         <th>LTP</th>
+                        <th>Status</th>
+                        <th>Is Valid</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var tc in s.Trades)
                     {
                         string rowClass = "";
-                        @* var quote = NseQuoteProvider.GetQuote(tc.ScriptName);
-                        string rowClass = "";
-                        if (tc.OrderType == "Buy")
-                        {
-                            if (quote.High > tc.TargetPrice)
-                            {
-                                rowClass = "table-success";
-                            }
-                            else if (quote.Low < tc.StopLossPrice)
-                            {
-                                rowClass = "table-danger";
-                            }
-                        }
-                        else
-                        {
-                            if (quote.Low < tc.TargetPrice)
-                            {
-                                rowClass = "table-success";
-                            }
-                            else if (quote.High > tc.TargetPrice)
-                            {
-                                rowClass = "table-danger";
-                            }
-                        } *@
-
                         <tr class='@rowClass'>
                             <td>
                                 @tc.ScriptName
@@ -76,15 +53,21 @@
                             </td>
                             <td>
                                 @tc.LTP
-                                <span>&nbsp;-&nbsp;</span>
+                            </td>
+                            <td>
+                                @tc.Status
+
+                            </td>
+                            <td>
                                 @tc.IsValid
+
                             </td>
                         </tr>
                     }
 
                 </tbody>
             </Table>
-            <a href="#" class="btn btn-primary">Clear All</a>
+            <a asp-controller="Home" asp-action="ClearAllTrades" class="btn btn-primary">Clear All</a>
             
         }
 

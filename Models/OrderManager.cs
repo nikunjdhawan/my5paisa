@@ -22,6 +22,8 @@ namespace My5Paisa.Models
 
         public static void Execute()
         {
+            if (SessionManager.Instance.IsLive == false)
+                return;
             bool loggedIn = false;
             foreach (var s in StrategyManager.AllStrategies)
             {
@@ -47,11 +49,16 @@ namespace My5Paisa.Models
                 tradeCall.Status = TradeCallStatus.Rejected;
                 return;
             }
-            if (SessionManager.Instance.IsLive)
+            bool isSuccess = WebSessionManager.PlaceOrder(tradeCall);
+            if(isSuccess)
             {
-                WebSessionManager.PlaceOrder(tradeCall);
-                trades.Add(tradeCall.ScriptName);
+                tradeCall.Status = TradeCallStatus.Executed;
             }
+            else
+            {
+                tradeCall.Status = TradeCallStatus.Failed;
+            }
+            trades.Add(tradeCall.ScriptName);
         }
     }
 }
