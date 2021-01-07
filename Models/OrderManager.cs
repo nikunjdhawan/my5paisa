@@ -20,18 +20,38 @@ namespace My5Paisa.Models
             trades = new List<string>();
         }
 
+        public static void Execute()
+        {
+            bool loggedIn = false;
+            foreach (var s in StrategyManager.AllStrategies)
+            {
+                foreach (var tc in s.Trades.Where(tc => tc.Status == TradeCallStatus.Triggered && tc.IsValid))
+                {
+                    if (trades.Count >= 10)
+                        continue;
+                    if (loggedIn == false)
+                    {
+                        WebSessionManager.Login();
+                        loggedIn = true;
+                    }
+                    var c = tc.ScriptCode;
+                    OpenPosition(tc);
+                }
+            }
+        }
+
         public static void OpenPosition(TradeCall tradeCall)
         {
-            if(trades.Contains(tradeCall.ScriptName))
+            if (trades.Contains(tradeCall.ScriptName))
+            {
+                tradeCall.Status = TradeCallStatus.Rejected;
                 return;
-            if(trades.Count > 0)
-                return;
-            // if(tradeCall.ScriptName == "COALINDIA")
-            if(SessionManager.Instance.IsLive)
+            }
+            if (SessionManager.Instance.IsLive)
             {
                 WebSessionManager.PlaceOrder(tradeCall);
                 trades.Add(tradeCall.ScriptName);
             }
-        }        
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace My5Paisa.Models
     public enum TradeCallStatus
     {
         Pending = 1,
+        Triggered,
+        Failed,
         Executed,
         Rejected
     }
@@ -17,14 +19,14 @@ namespace My5Paisa.Models
             set { status = value; }
         }
         
-        private double triggerPrice;
+        private double triggerPrice = 0;
         public double TriggerPrice
         {
             get { return triggerPrice; }
             set { triggerPrice = value; }
         }
 
-        private double ltp;
+        private double ltp = 0;
         public double LTP
         {
             get { return ltp; }
@@ -106,14 +108,16 @@ namespace My5Paisa.Models
                     if(TargetPrice < Price) return false;
                     if(StopLossPrice > Price) return false;
                     if(LTP < StopLossPrice) return false;
-                    if(TriggerPrice < LTP) return false;
+                    if(TriggerPrice>0 && TriggerPrice < LTP) return false;
+                    if(LTP = 0) return false;
                 }
                 else
                 {
                     if(TargetPrice > Price) return false;
                     if(StopLossPrice < Price) return false;
                     if(LTP > StopLossPrice) return false;
-                    if(TriggerPrice > LTP) return false;
+                    if(TriggerPrice>0 && TriggerPrice > LTP) return false;
+                    if(LTP = 0) return false;
                 }
                 return true;
             }

@@ -14,7 +14,7 @@ namespace My5Paisa.Models
             }
         }
 
-        public override string ExecuteCronExpression
+        public override string TriggerCronExpression
         {
             get
             {

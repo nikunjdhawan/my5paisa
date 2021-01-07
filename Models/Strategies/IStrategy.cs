@@ -6,7 +6,7 @@ namespace My5Paisa.Models
     public abstract class StrategyBase
     {
         public abstract string ScanCronExpression { get; }
-        public abstract string ExecuteCronExpression { get; }
+        public abstract string TriggerCronExpression { get; }
         public abstract string Description { get; }
         public abstract string Name { get; }
         public abstract string Id { get; }
@@ -22,13 +22,11 @@ namespace My5Paisa.Models
             }
         }
 
-        public virtual void Execute()
+        public virtual void Trigger()
         {
-            WebSessionManager.Login();
-            foreach (var tc in trades.Where(tc => tc.Status == TradeCallStatus.Pending && tc.IsValid==true))
+            foreach (var tc in trades.Where(tc => tc.Status == TradeCallStatus.Pending))
             {
-                var c = tc.ScriptCode;
-                OrderManager.OpenPosition(tc);
+                tc.Status = TradeCallStatus.Triggered;
             }
         }
 

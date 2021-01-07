@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
+using Newtonsoft.Json;
 using RestSharp;
 using Websocket.Client;
 
@@ -24,9 +25,10 @@ namespace My5Paisa.Models
     }
 
 
-    public static class MarketFeed
+    public static class MarketFeedManager
     {
         static MarketFeedRequest request = new MarketFeedRequest();
+        static WebsocketClient client;
         private static readonly ManualResetEvent ExitEvent = new ManualResetEvent(false);
 
         private static string LoginCheck()
@@ -35,6 +37,7 @@ namespace My5Paisa.Models
             IRestResponse response;
             while (cookie.Length == 0)
             {
+                SessionManager.Instance.AddMessage("Calling LoginCheck() .... ");
                 var client = new RestClient("https://openfeed.5paisa.com/Feeds/api/UserActivity/LoginCheck");
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
@@ -67,7 +70,7 @@ namespace My5Paisa.Models
             socket.Options.Cookies.Add(new System.Net.Cookie(".ASPXAUTH", cookie, "/", "openfeed.5paisa.com"));
             return socket;
         }
-        static MarketFeed()
+        static MarketFeedManager()
         {
             request.ClientCode = "54965884";
             request.Method = "MarketFeedV3";
@@ -77,29 +80,59 @@ namespace My5Paisa.Models
             var data = request.MarketFeedData;
 
             data.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = 15083 });
+            data.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = 1330 });
 
 
 
+        }
+
+        public static void AddScript(int scriptCode)
+        {
+            request.MarketFeedData.Add(new MarketFeedData { Exch = "N", ExchType = "C", ScripCode = scriptCode });
+            string msg = SimpleJson.SerializeObject(request);
+            client.Send(msg);
         }
 
         public static void Start()
         {
             var url = new Uri("wss://openfeed.5paisa.com/Feeds/api/chat?Value1=zdw053xuljn0d5q4potp5djs");
             var factory = new Func<ClientWebSocket>(() => InitSocket());
-            using (var client = new WebsocketClient(url, factory))
+            using (client = new WebsocketClient(url, factory))
             {
                 client.ReconnectTimeout = TimeSpan.FromSeconds(30);
                 client.ReconnectionHappened.Subscribe(info =>
                     SessionManager.Instance.AddMessage($"Reconnection happened, type: {info.Type}"));
 
-                client.MessageReceived.Subscribe(msg => SessionManager.Instance.AddMessage($"Message received: {msg}"));
+                client.MessageReceived.Subscribe(msg => MessageReceived($"{msg}"));
 
                 client.Start();
                 string msg = SimpleJson.SerializeObject(request);
 
-                //string msg = "{\"Method\":\"MarketFeedV3\",\"Operation\":\"Subscribe\",\"ClientCode\":\"54965884\",\"MarketFeedData\":[{\"Exch\":\"N\",\"ExchType\":\"C\",\"ScripCode\":15083},{\"Exch\":\"N\",\"ExchType\":\"C\",\"ScripCode\":14732}]}";
                 client.Send(msg);
                 ExitEvent.WaitOne();
+            }
+
+        }
+
+        private static void MessageReceived(string msg)
+        {
+            try
+            {
+                SessionManager.Instance.AddMessage($"Message received: {msg}");
+                MarketFeedResponse[] response = JsonConvert.DeserializeObject<MarketFeedResponse[]>(msg);
+                foreach (var s in StrategyManager.AllStrategies)
+                {
+                    foreach (var tc in s.Trades)
+                    {
+                        if (tc.ScriptCode == response[0].Token)
+                            tc.LTP = response[0].LastRate;
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                SessionManager.Instance.AddMessage($"Exception: {ex.ToString()}");
             }
 
         }
@@ -110,4 +143,31 @@ namespace My5Paisa.Models
         }
 
     }
+
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+    public class MarketFeedResponse
+    {
+        public string Exch { get; set; }
+        public string ExchType { get; set; }
+        public int Token { get; set; }
+        public double LastRate { get; set; }
+        public int LastQty { get; set; }
+        public int TotalQty { get; set; }
+        public double High { get; set; }
+        public double Low { get; set; }
+        public double OpenRate { get; set; }
+        public double PClose { get; set; }
+        public double AvgRate { get; set; }
+        public int Time { get; set; }
+        public int BidQty { get; set; }
+        public double BidRate { get; set; }
+        public int OffQty { get; set; }
+        public double OffRate { get; set; }
+        public int TBidQ { get; set; }
+        public int TOffQ { get; set; }
+        public DateTime TickDt { get; set; }
+    }
+
+
+
 }

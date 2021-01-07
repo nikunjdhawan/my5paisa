@@ -15,7 +15,7 @@ namespace My5Paisa.Models
             }
         }
 
-        public override string ExecuteCronExpression
+        public override string TriggerCronExpression
         {
             get
             {
@@ -82,6 +82,7 @@ namespace My5Paisa.Models
                 {
                     TradeCall tc = new TradeCall { ScriptName = item.symbol, TriggerPrice = item.high , Price = item.high + 0.5, OrderType = "Buy", LTP = item.ltP };
                     trades.Add(tc);
+                    MarketFeedManager.AddScript(tc.ScriptCode);
                 }
             }
             foreach (var item in nifty50.data.Where(i => i.ltP < 5000 && i.ltP > 1000))
@@ -92,6 +93,7 @@ namespace My5Paisa.Models
                 {
                     TradeCall tc = new TradeCall { ScriptName = item.symbol, TriggerPrice = item.low, Price = item.low - .5, OrderType = "Sell", LTP = item.ltP };
                     trades.Add(tc);
+                    MarketFeedManager.AddScript(tc.ScriptCode);
                 }
 
             }

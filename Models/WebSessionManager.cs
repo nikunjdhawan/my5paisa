@@ -124,8 +124,8 @@ namespace My5Paisa.Models
             ht["ExchOrderTime"] = "%2FDate(" + today + ")% 2F";
             ht["AHPlaced"] = "false";
             ht["DelvIntra"] = "";
-            ht["LastRate"] = "0";
-            ht["LimitPriceforSL"] = "0";
+            // ht["LastRate"] = "0";
+            // ht["LimitPriceforSL"] = "0";
             ht["TriggerPriceforSL"] = tradeCall.StopLossPrice.ToString();
             ht["TrailingSL"] = "0";
             ht["LimitPriceforProfitOrder"] = tradeCall.TargetPrice.ToString();

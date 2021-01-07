@@ -27,9 +27,9 @@ namespace My5Paisa.Controllers
         {
             StrategyManager.GetById(id).Scan();
         }
-        public static void Execute(string id)
+        public static void Trigger(string id)
         {
-            StrategyManager.GetById(id).Execute();
+            StrategyManager.GetById(id).Trigger();
         }
 
         public static void NewDay()
@@ -37,9 +37,14 @@ namespace My5Paisa.Controllers
             OrderManager.NewDay();
         }
 
+        public static void Execute()
+        {
+            OrderManager.Execute();
+        }
+
         public static void StartMarketFeed()
         {
-            MarketFeed.Start();
+            MarketFeedManager.Start();
         }
 
     }
@@ -53,9 +58,10 @@ namespace My5Paisa.Controllers
             foreach (var item in StrategyManager.AllStrategies)
             {
                 RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);
-                RecurringJob.AddOrUpdate("Execute-" + item.Name, () => TaskManager.Execute(item.Id), item.ExecuteCronExpression, INDIAN_ZONE);
+                RecurringJob.AddOrUpdate("Execute-" + item.Name, () => TaskManager.Trigger(item.Id), item.TriggerCronExpression, INDIAN_ZONE);
             }
-            //Hangfire.BackgroundJob.Enqueue(() => TaskManager.StartMarketFeed());
+            Hangfire.BackgroundJob.Enqueue(() => TaskManager.StartMarketFeed());
+            RecurringJob.AddOrUpdate(() => TaskManager.Execute(), Cron.Minutely, INDIAN_ZONE);
         }
 
 
