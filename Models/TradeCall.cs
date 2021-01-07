@@ -2,8 +2,35 @@ using System;
 
 namespace My5Paisa.Models
 {
+    public enum TradeCallStatus
+    {
+        Pending = 1,
+        Executed,
+        Rejected
+    }
     public class TradeCall
     {
+        private TradeCallStatus status = TradeCallStatus.Pending;
+        public TradeCallStatus Status
+        {
+            get { return status; }
+            set { status = value; }
+        }
+        
+        private double triggerPrice;
+        public double TriggerPrice
+        {
+            get { return triggerPrice; }
+            set { triggerPrice = value; }
+        }
+
+        private double ltp;
+        public double LTP
+        {
+            get { return ltp; }
+            set { ltp = value; }
+        }
+        
         private double stopLossPercent = 0.6;
         private double targetPercent = 1.2;
         private int scriptCode = -1;
@@ -70,5 +97,26 @@ namespace My5Paisa.Models
 
         }
 
+        public bool IsValid
+        {
+            get
+            {
+                if(OrderType == "Buy")
+                {
+                    if(TargetPrice < Price) return false;
+                    if(StopLossPrice > Price) return false;
+                    if(LTP < StopLossPrice) return false;
+                    if(TriggerPrice < LTP) return false;
+                }
+                else
+                {
+                    if(TargetPrice > Price) return false;
+                    if(StopLossPrice < Price) return false;
+                    if(LTP > StopLossPrice) return false;
+                    if(TriggerPrice > LTP) return false;
+                }
+                return true;
+            }
+        }
     }
 }

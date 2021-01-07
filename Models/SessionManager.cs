@@ -41,10 +41,12 @@ namespace My5Paisa.Models
         private OrderBookRoot orders;
         public OrderBookRoot Orders
         {
-            get { 
-                
-                if(orders == null) GetOrderBook();
-                return orders; }
+            get
+            {
+
+                if (orders == null) GetOrderBook();
+                return orders;
+            }
         }
 
         // private List<TradeCall> trades = new List<TradeCall>();
@@ -97,6 +99,8 @@ namespace My5Paisa.Models
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5PMarginV3\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             MarginRoot root = JsonConvert.DeserializeObject(response.Content, typeof(MarginRoot)) as MarginRoot;
+            if (root == null || root.body == null || root.body.EquityMargin == null || root.body.EquityMargin.Count == 0)
+                return;
             Messages.Add(root.body.EquityMargin[0].AvailableMargin.ToString());
             margin = root.body.EquityMargin[0].AvailableMargin;
 
@@ -114,10 +118,10 @@ namespace My5Paisa.Models
             IRestResponse response = client.Execute(request);
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
-            if (root != null && root.body!=null)
+            if (root != null && root.body != null)
             {
                 netPositions = root;
-                if(root.body.NetPositionDetail.Count > 0)
+                if (root.body.NetPositionDetail.Count > 0)
                     Messages.Add(DateTime.Now.TimeOfDay + ": " + root.body.NetPositionDetail[0].MTOM.ToString());
             }
             else

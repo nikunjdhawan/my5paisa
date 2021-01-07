@@ -3,11 +3,11 @@
 }
 <h1>@ViewData["Title"]</h1>
 <div class="row">
-    <div class="col">@foreach (var item in SecurityManager.Instance.GetNifty50)
+    @* <div class="col">@foreach (var item in SecurityManager.Instance.GetNifty50)
         {
             <p>@item.Scripcode : @item.Name : @item.FullName</p>
         }
-    </div>
+    </div> *@
     <div class="col">
         @for (int i = SessionManager.Instance.Messages.Count - 1; i >= 0; i--)
         {

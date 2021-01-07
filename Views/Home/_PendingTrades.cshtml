@@ -15,11 +15,11 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Script</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Buy/Sell</th>
+                        <th>Type</th>
+                        <th>Rate</th>                      
                         <th>Target</th>
                         <th>Stop Loss</th>
+                        <th>LTP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,24 +57,27 @@
 
                             </td>
                             <td>
-                                @tc.Qty
-
-                            </td>
-                            <td>
-                                @tc.Price.ToString("c")
-
-                            </td>
-                            <td>
                                 @tc.OrderType
+                                <span>&nbsp;-&nbsp;</span>
+                                @tc.Qty
+                            </td>                            
+                            <td>
+                                @tc.Price
+
+                            </td>
+                            
+                            <td>
+                                @tc.TargetPrice
 
                             </td>
                             <td>
-                                @tc.TargetPrice.ToString("c")
+                                @tc.StopLossPrice
 
                             </td>
                             <td>
-                                @tc.StopLossPrice.ToString("c")
-
+                                @tc.LTP
+                                <span>&nbsp;-&nbsp;</span>
+                                @tc.IsValid
                             </td>
                         </tr>
                     }

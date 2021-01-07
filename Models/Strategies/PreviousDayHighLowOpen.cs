@@ -80,7 +80,7 @@ namespace My5Paisa.Models
                 var diffP = diff / item.open * 100;
                 if (diffP >= -0.1 && diffP < 0.1)
                 {
-                    TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.high, OrderType = "Buy" };
+                    TradeCall tc = new TradeCall { ScriptName = item.symbol, TriggerPrice = item.high , Price = item.high + 0.5, OrderType = "Buy", LTP = item.ltP };
                     trades.Add(tc);
                 }
             }
@@ -90,7 +90,7 @@ namespace My5Paisa.Models
                 var diffP = diff / item.open * 100;
                 if (diffP >= -0.1 && diffP < 0.1)
                 {
-                    TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.low, OrderType = "Sell" };
+                    TradeCall tc = new TradeCall { ScriptName = item.symbol, TriggerPrice = item.low, Price = item.low - .5, OrderType = "Sell", LTP = item.ltP };
                     trades.Add(tc);
                 }
 

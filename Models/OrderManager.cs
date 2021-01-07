@@ -24,10 +24,14 @@ namespace My5Paisa.Models
         {
             if(trades.Contains(tradeCall.ScriptName))
                 return;
+            if(trades.Count > 0)
+                return;
             // if(tradeCall.ScriptName == "COALINDIA")
             if(SessionManager.Instance.IsLive)
+            {
                 WebSessionManager.PlaceOrder(tradeCall);
-            trades.Add(tradeCall.ScriptName);
+                trades.Add(tradeCall.ScriptName);
+            }
         }        
     }
 }

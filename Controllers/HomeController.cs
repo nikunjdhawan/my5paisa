@@ -36,6 +36,12 @@ namespace My5Paisa.Controllers
         {
             OrderManager.NewDay();
         }
+
+        public static void StartMarketFeed()
+        {
+            MarketFeed.Start();
+        }
+
     }
     public class HomeController : Controller
     {
@@ -49,6 +55,7 @@ namespace My5Paisa.Controllers
                 RecurringJob.AddOrUpdate("Scan-" + item.Name, () => TaskManager.Scan(item.Id), item.ScanCronExpression, INDIAN_ZONE);
                 RecurringJob.AddOrUpdate("Execute-" + item.Name, () => TaskManager.Execute(item.Id), item.ExecuteCronExpression, INDIAN_ZONE);
             }
+            //Hangfire.BackgroundJob.Enqueue(() => TaskManager.StartMarketFeed());
         }
 
 

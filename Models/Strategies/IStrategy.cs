@@ -25,12 +25,11 @@ namespace My5Paisa.Models
         public virtual void Execute()
         {
             WebSessionManager.Login();
-            foreach (var tc in trades)
+            foreach (var tc in trades.Where(tc => tc.Status == TradeCallStatus.Pending && tc.IsValid==true))
             {
                 var c = tc.ScriptCode;
                 OrderManager.OpenPosition(tc);
             }
-            trades.Clear();
         }
 
         public abstract void Scan();
