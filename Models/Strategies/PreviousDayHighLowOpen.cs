@@ -19,7 +19,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return "16 9 * * MON-FRI";
+                return "10 9 * * MON-FRI";
             }
         }
 

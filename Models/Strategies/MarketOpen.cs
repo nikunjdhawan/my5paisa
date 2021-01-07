@@ -10,7 +10,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return "8 9 * * MON-FRI";
+                return "9 9 * * MON-FRI";
             }
         }
 
@@ -18,7 +18,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return "15 9 * * MON-FRI";
+                return "12 9 * * MON-FRI";
             }
         }
 
