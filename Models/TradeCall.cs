@@ -34,7 +34,7 @@ namespace My5Paisa.Models
         }
         
         private double stopLossPercent = 0.6;
-        private double targetPercent = 1.2;
+        private double targetPercent = 0.65;
         private int scriptCode = -1;
         public int ScriptCode
         {

@@ -119,7 +119,7 @@ namespace My5Paisa.Models
         {
             try
             {
-                SessionManager.Instance.AddMessage($"Message received: {msg}");
+                // SessionManager.Instance.AddMessage($"Message received: {msg}");
                 MarketFeedResponse[] response = JsonConvert.DeserializeObject<MarketFeedResponse[]>(msg);
                 for (int i = 0; i < StrategyManager.AllStrategies.Count; i++)
                 {

@@ -55,7 +55,7 @@ namespace My5Paisa.Models
 
         static StrategyManager()
         {
-            // allStrategies.Add(new MarketOpen());
+            //allStrategies.Add(new MarketOpen());
             allStrategies.Add(new PreviousDayHighLowOpen());
         }
 

@@ -131,7 +131,7 @@ namespace My5Paisa.Models
         }
 
 
-        public OrderBookRoot GetOrderBook()
+        public void GetOrderBook()
         {
             var client = new RestClient("https://Openapi.5paisa.com/VendorsAPI/Service1.svc/V2/OrderBook");
             client.Timeout = -1;
@@ -140,8 +140,10 @@ namespace My5Paisa.Models
             request.AddHeader("Cookie", "PIData=TklLVU5K; 5paisacookie=zdw053xuljn0d5q4potp5djs");
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5POrdBkV2\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-            orders = JsonConvert.DeserializeObject(response.Content, typeof(OrderBookRoot)) as OrderBookRoot;
-            return orders;
+            var content = response.Content;
+            if(content.StartsWith("<")) return;
+            orders = JsonConvert.DeserializeObject(content, typeof(OrderBookRoot)) as OrderBookRoot;
+            return;
         }
 
     }

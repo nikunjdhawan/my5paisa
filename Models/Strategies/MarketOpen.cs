@@ -48,7 +48,7 @@ namespace My5Paisa.Models
 
         public override void Scan()
         {
-            if(trades.Count>0) return;
+            if (trades.Count > 0) return;
             var client = new RestClient("https://www1.nseindia.com/live_market/dynaContent/live_analysis/pre_open/nifty.json");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -62,13 +62,15 @@ namespace My5Paisa.Models
 
             foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000 && i.iep > 1000).OrderBy(i => i.perChn).Take(buyOrdersCount))
             {
-                TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Buy"};
+                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, OrderType = "Buy" };
                 trades.Add(tc);
+                MarketFeedManager.AddScript(tc.ScriptCode);
             }
             foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000 && i.iep > 1000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
             {
-                TradeCall tc = new TradeCall{ScriptName = item.symbol, Price = item.iep, OrderType = "Sell"};
+                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, OrderType = "Sell" };
                 trades.Add(tc);
+                MarketFeedManager.AddScript(tc.ScriptCode);
             }
         }
     }
