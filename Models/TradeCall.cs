@@ -26,6 +26,13 @@ namespace My5Paisa.Models
             set { triggerPrice = value; }
         }
 
+        private bool isMarket = false;
+        public bool IsMarket
+        {
+            get { return isMarket; }
+            set { isMarket = value; }
+        }
+                
         private double ltp = 0;
         public double LTP
         {

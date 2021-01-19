@@ -18,7 +18,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return "12 9 * * MON-FRI";
+                return "15 9 * * MON-FRI";
             }
         }
 
@@ -26,7 +26,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return "Scans Nifty50 before the market opens and create trades in ration of market strength";
+                return "Scans Nifty50 before the market opens and create trades in ratio of market strength";
             }
         }
 
@@ -62,13 +62,13 @@ namespace My5Paisa.Models
 
             foreach (var item in nifty50.data.Where(i => i.perChn > 0 && i.iep < 5000 && i.iep > 1000).OrderBy(i => i.perChn).Take(buyOrdersCount))
             {
-                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, OrderType = "Buy" };
+                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, LTP = item.iep, OrderType = "Buy", IsMarket = true };
                 trades.Add(tc);
                 MarketFeedManager.AddScript(tc.ScriptCode);
             }
             foreach (var item in nifty50.data.Where(i => i.perChn < 0 && i.iep < 5000 && i.iep > 1000).OrderByDescending(i => i.perChn).Take(10 - buyOrdersCount))
             {
-                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, OrderType = "Sell" };
+                TradeCall tc = new TradeCall { ScriptName = item.symbol, Price = item.iep, LTP = item.iep, OrderType = "Sell", IsMarket = true };
                 trades.Add(tc);
                 MarketFeedManager.AddScript(tc.ScriptCode);
             }

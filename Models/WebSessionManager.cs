@@ -100,14 +100,26 @@ namespace My5Paisa.Models
             ht["Series"] = "";
             ht["DiscloseQty"] = "0";
             ht["CurrentPrice"] = tradeCall.Price.ToString();
-            ht["TriggerRate"] = tradeCall.TriggerPrice.ToString();
+            if (tradeCall.IsMarket)
+            {
+                ht["TriggerRate"] = "0";
+                ht["isAtMarket"] = "true";
+                ht["TriggerRateTMO"] = "0";
+            }
+            else
+            {
+
+                ht["TriggerRate"] = tradeCall.TriggerPrice.ToString();
+                ht["isAtMarket"] = "false";
+                ht["TriggerRateTMO"] = tradeCall.TriggerPrice.ToString();
+            }
             ht["IOC"] = "false";
             ht["ISSL"] = "false";
             ht["ScripCode"] = tradeCall.ScriptCode.ToString();
             ht["TerminalId"] = "";
             ht["AfterHrs"] = "false";
             ht["SLStatus"] = "false";
-            ht["isAtMarket"] = "false";
+            
             ht["sProduct"] = "";
             ht["Validity"] = "0";
             ht["ValideDate"] = "%2FDate(" + today + ")%2F";
@@ -134,7 +146,7 @@ namespace My5Paisa.Models
             ht["ISCoverOrder"] = "N";
             ht["TriggerPriceSLforCoverOrder"] = "0";
             ht["TrailingSLforCoverOrder"] = "0";
-            ht["TriggerRateTMO"] = tradeCall.TriggerPrice.ToString();
+            
             ht["TrailingSLForNormalOrder"] = "0";
             ht["TickSize"] = "0.05";
             ht["SourceAPP"] = "6";
