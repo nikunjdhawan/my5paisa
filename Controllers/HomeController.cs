@@ -67,7 +67,7 @@ namespace My5Paisa.Controllers
         {
             string newDay = "0 9 * * MON-FRI";
             string goLive = "16 9 * * MON-FRI";
-            string goOffline = "0 16 * * MON-FRI";
+            string goOffline = "31 15 * * MON-FRI";
             RecurringJob.AddOrUpdate(() => TaskManager.NewDay(), newDay, INDIAN_ZONE);
             RecurringJob.AddOrUpdate(() => TaskManager.GoLive(), goLive, INDIAN_ZONE);
             RecurringJob.AddOrUpdate(() => TaskManager.GoOffline(), goOffline, INDIAN_ZONE);
