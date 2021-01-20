@@ -66,7 +66,7 @@ namespace My5Paisa.Models
         {
             get
             {
-                return (int)(10000 / Price);
+                return (int)(100000 / Price);
             }
         }
 
