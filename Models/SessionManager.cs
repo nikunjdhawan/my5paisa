@@ -65,7 +65,8 @@ namespace My5Paisa.Models
 
         public void AddMessage(string msg)
         {
-            messages.Add(msg);
+            var dt = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("India Standard Time"));
+            messages.Add(dt.ToShortTimeString() + " : " + msg);
         }
         private SessionManager()
         {
