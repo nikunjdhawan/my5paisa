@@ -40,6 +40,7 @@ namespace My5Paisa.Controllers
 
         public static void GoLive()
         {
+            System.Threading.Thread.Sleep(10*1000);
             SessionManager.Instance.IsLive = true;
             TaskManager.StartMarketFeed();
         }
@@ -66,7 +67,7 @@ namespace My5Paisa.Controllers
         static HomeController()
         {
             string newDay = "0 9 * * MON-FRI";
-            string goLive = "15 9 * * MON-FRI";
+            string goLive = "30 14 9 * * MON-FRI";
             string goOffline = "31 15 * * MON-FRI";
             RecurringJob.AddOrUpdate(() => TaskManager.NewDay(), newDay, INDIAN_ZONE);
             RecurringJob.AddOrUpdate(() => TaskManager.GoLive(), goLive, INDIAN_ZONE);
@@ -78,6 +79,7 @@ namespace My5Paisa.Controllers
                 RecurringJob.AddOrUpdate("Trigger-" + item.Name, () => TaskManager.Trigger(item.Id), item.TriggerCronExpression, INDIAN_ZONE);
             }
             RecurringJob.AddOrUpdate(() => TaskManager.Execute(), Cron.Minutely, INDIAN_ZONE);
+            SessionManager.Instance.AddMessage("All tasks lined up");
         }
 
 
