@@ -18,7 +18,7 @@ namespace My5Paisa.Models
             get { return status; }
             set { status = value; }
         }
-        
+
         private double triggerPrice = 0;
         public double TriggerPrice
         {
@@ -32,16 +32,16 @@ namespace My5Paisa.Models
             get { return isMarket; }
             set { isMarket = value; }
         }
-                
+
         private double ltp = 0;
         public double LTP
         {
             get { return ltp; }
             set { ltp = value; }
         }
-        
-        private double stopLossPercent = 0.6;
-        private double targetPercent = 0.65;
+
+        public static double stopLossPercent = 0.6;
+        public static double targetPercent = 0.65;
         private int scriptCode = -1;
         public int ScriptCode
         {
@@ -70,22 +70,46 @@ namespace My5Paisa.Models
             }
         }
 
+        public static double GetStopLossPrice(double price_, bool isBuy)
+        {
+            if (isBuy)
+            {
+                return Math.Round(price_ * ((100 - stopLossPercent) / 100), 1);
+            }
+            else
+            {
+                return Math.Round(price_ * ((100 + stopLossPercent) / 100), 1);
+            }
+        }
+
         public double StopLossPrice
         {
             get
             {
                 if (OrderType == "Buy")
                 {
-                    return Math.Round(Price * ((100 - stopLossPercent) / 100), 1);
+                    return GetStopLossPrice(Price, true);
                 }
                 if (OrderType == "Sell")
                 {
-                    return Math.Round(Price * ((100 + stopLossPercent) / 100), 1);
+                    return  GetStopLossPrice(Price, false);
                 }
                 return 0;
 
             }
 
+        }
+
+        public static double GetTargetPrice(double price_, bool isBuy)
+        {
+            if (isBuy)
+            {
+                return Math.Round(price_ * ((100 + targetPercent) / 100), 1);
+            }
+            else
+            {
+                return Math.Round(price_ * ((100 - targetPercent) / 100), 1);
+            }
         }
 
         public double TargetPrice
@@ -94,11 +118,11 @@ namespace My5Paisa.Models
             {
                 if (OrderType == "Buy")
                 {
-                    return Math.Round(Price * ((100 + targetPercent) / 100), 1);
+                    return GetTargetPrice(Price, true);
                 }
                 if (OrderType == "Sell")
                 {
-                    return Math.Round(Price * ((100 - targetPercent) / 100), 1);
+                    return GetTargetPrice(Price, false);
                 }
                 return 0;
 
@@ -110,21 +134,21 @@ namespace My5Paisa.Models
         {
             get
             {
-                if(OrderType == "Buy")
+                if (OrderType == "Buy")
                 {
-                    if(TargetPrice < Price) return false;
-                    if(StopLossPrice > Price) return false;
-                    if(LTP < StopLossPrice) return false;
-                    if(TriggerPrice>0 && TriggerPrice - LTP < 1) return false; 
-                    if(LTP == 0) return false;
+                    if (TargetPrice < Price) return false;
+                    if (StopLossPrice > Price) return false;
+                    if (LTP < StopLossPrice) return false;
+                    if (TriggerPrice > 0 && TriggerPrice - LTP < 1) return false;
+                    if (LTP == 0) return false;
                 }
                 else
                 {
-                    if(TargetPrice > Price) return false;
-                    if(StopLossPrice < Price) return false;
-                    if(LTP > StopLossPrice) return false;
-                    if(TriggerPrice>0 && LTP - TriggerPrice < 1) return false;
-                    if(LTP == 0) return false;
+                    if (TargetPrice > Price) return false;
+                    if (StopLossPrice < Price) return false;
+                    if (LTP > StopLossPrice) return false;
+                    if (TriggerPrice > 0 && LTP - TriggerPrice < 1) return false;
+                    if (LTP == 0) return false;
                 }
                 return true;
             }

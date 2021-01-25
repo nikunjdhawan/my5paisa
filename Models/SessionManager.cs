@@ -31,6 +31,7 @@ namespace My5Paisa.Models
         }
 
         public bool IsLive = false;
+        public bool IsLocal = false;
 
         private NetPositionRoot netPositions;
         public NetPositionRoot NetPositions
@@ -43,17 +44,10 @@ namespace My5Paisa.Models
         {
             get
             {
-
                 if (orders == null) GetOrderBook();
                 return orders;
             }
         }
-
-        // private List<TradeCall> trades = new List<TradeCall>();
-        // public List<TradeCall> Trades
-        // {
-        //     get { return trades; }
-        // }
 
 
         private double margin;
@@ -115,7 +109,7 @@ namespace My5Paisa.Models
             request.AddHeader("Cookie", "PIData=TklLVU5K; 5paisacookie=zdw053xuljn0d5q4potp5djs; JwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjU0OTY1ODg0IiwibmJmIjoxNjA5NDAyMTg0LCJleHAiOjE2MTcxNzgxODQsImlhdCI6MTYwOTQwMjE4NH0.cKnFAQZw2LupT4hKUyPMLlKiTtkMaeGabLvvjKWn2-Q");
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5PNPNWV1\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-            if(response.Content.StartsWith("<")) {return netPositions;}
+            if (response.Content.StartsWith("<")) { return netPositions; }
             NetPositionRoot root = JsonConvert.DeserializeObject(response.Content, typeof(NetPositionRoot)) as NetPositionRoot;
 
             if (root != null && root.body != null)
@@ -124,7 +118,6 @@ namespace My5Paisa.Models
             }
             else
             {
-                Messages.Add(DateTime.Now.TimeOfDay + ": " + "No Net positions response...");
                 return netPositions;
             }
 
@@ -142,9 +135,43 @@ namespace My5Paisa.Models
             request.AddParameter("application/json", "{\n    \"head\": {\n        \"appName\": \"5P54965884\",\n        \"appVer\": \"1.0\",\n        \"key\": \"PNC67ejiGYsWDAXvxEVVORSHurKnExho\",\n        \"osName\": \"WEB\",\n        \"requestCode\": \"5POrdBkV2\",\n        \"userId\": \"m5rK5jEwGtK\",\n        \"password\": \"Vw0EUSzdh6P\"\n    },\n    \"body\": {\n        \"ClientCode\": \"54965884\"\n    }\n}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             var content = response.Content;
-            if(content.StartsWith("<")) return;
+            if (content.StartsWith("<")) return;
             orders = JsonConvert.DeserializeObject(content, typeof(OrderBookRoot)) as OrderBookRoot;
-            return;
+        }
+
+        public void BalanceOrders()
+        {
+            foreach (var np in NetPositions.body.NetPositionDetail)
+            {
+                if (np.NetQty != 0)
+                {
+                    foreach (var order in Orders.body.OrderBookDetail)
+                    {
+                        if (order.ScripCode == np.ScripCode && order.OrderStatus == "Pending" || order.ScripCode == np.ScripCode && order.OrderStatus == "Modified")
+                        {
+                            double slPrice, targetPrice;
+                            if (np.NetQty > 0) // It is a Buy Order
+                            {
+                                slPrice = TradeCall.GetStopLossPrice(np.BuyAvgRate, true);
+                                targetPrice = TradeCall.GetTargetPrice(np.BuyAvgRate, true);
+                            }
+                            else
+                            {
+                                slPrice = TradeCall.GetStopLossPrice(np.SellAvgRate, false);
+                                targetPrice = TradeCall.GetTargetPrice(np.SellAvgRate, false);
+                            }
+                            if (order.SLTriggerRate > 0 && order.SLTriggerRate != slPrice)
+                            {
+                                WebSessionManager.ModifyOrder(order, slPrice, 0);
+                            }
+                            if (order.Rate > 0 && order.Rate != targetPrice)
+                            {
+                                WebSessionManager.ModifyOrder(order, 0, targetPrice);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }

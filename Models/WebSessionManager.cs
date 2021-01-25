@@ -59,11 +59,6 @@ namespace My5Paisa.Models
 
         public static bool PlaceOrder(TradeCall tradeCall)
         {
-            var doff = new DateTimeOffset(DateTime.Today);
-            string today = doff.ToUnixTimeSeconds().ToString();
-            string orderType = tradeCall.OrderType;
-            //string bracketstr = "RequestType=P&BuySell=" + tradeCall.OrderType + "&Symbol=&FullName=" + tradeCall.ScriptName + "&Name=" + tradeCall.ScriptName + "&Category=&Quantity=" + tradeCall.Qty + "&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=" + tradeCall.Price + "&TriggerRate=" + tradeCall.TriggerPrice + "&IOC=false&ISSL=false&ScripCode=" + tradeCall.ScriptCode + "&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate(" + today + ")%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=0&OrderValue=" + tradeCall.Price * tradeCall.Qty + "&ExchOrderID=&ExchOrderTime=%2FDate(" + today + ")%2F&AHPlaced=false&DelvIntra=&LastRate=0&LimitPriceforSL=0&TriggerPriceforSL=" + tradeCall.StopLossPrice + "&TrailingSL=0&LimitPriceforProfitOrder=" + tradeCall.TargetPrice + "&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=" + tradeCall.TriggerPrice + "&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N";
-
             string bracketstr = GetRequest(tradeCall);
 
             var request = new HttpRequestMessage()
@@ -81,6 +76,100 @@ namespace My5Paisa.Models
             return strResponse.Contains("Xmitted");
         }
 
+        public static void ModifyOrder(OrderBookDetail order, double stoploss=0, double target = 0)
+        {
+            var doff = new DateTimeOffset(DateTime.Today);
+            string today = doff.ToUnixTimeSeconds().ToString();
+
+            NameValueCollection ht = new NameValueCollection();
+            ht["RequestType"] = "M";
+            ht["BuySell"] = order.BuySell == "S" ? "Sell" : "Buy";
+            ht["Symbol"] = "";
+            ht["FullName"] = order.ScripName;
+            ht["Name"] = order.ScripName;
+            ht["Category"] = "";
+            ht["Quantity"] = order.Qty.ToString();
+            ht["OldOrderNumber"] = "";
+            ht["Exch"] = "N";
+            ht["ExchType"] = "C";
+            ht["Series"] = "";
+            ht["DiscloseQty"] = "0";
+            if(target > 0)
+            {
+                ht["CurrentPrice"] = target.ToString();
+                ht["TriggerRate"] = "0";
+                ht["isAtMarket"] = "false";
+                ht["OrderValue"] = (target * order.Qty).ToString();
+
+            }
+            if(stoploss>0)
+            {
+                ht["CurrentPrice"] = "0";
+                ht["TriggerRate"] = stoploss.ToString();
+                ht["isAtMarket"] = "true";
+                ht["OrderValue"] = (stoploss * order.Qty).ToString();
+
+            }
+            ht["TriggerRateTMO"] = "0";
+            
+            ht["IOC"] = "false";
+            ht["ISSL"] = "false";
+            ht["ScripCode"] = order.ScripCode.ToString();
+            ht["TerminalId"] = "";
+            ht["AfterHrs"] = "false";
+            ht["SLStatus"] = "false";
+            
+            ht["sProduct"] = "";
+            ht["Validity"] = "0";
+            ht["ValideDate"] = "%2FDate(" + today + ")%2F";
+            ht["disableBuySell"] = "false";
+            ht["CallFrom"] = "";
+            ht["currStatus"] = "";
+            ht["TradedQty"] = "0";
+            ht["smotrailsl"] = "";
+            ht["Volume"] = "0";
+            ht["AdvanceBuy"] = "false";
+            ht["BidRate"] = "";
+            ht["OffRate"] = "";
+            
+            ht["ExchOrderID"] = order.ExchOrderID;
+            ht["ExchOrderTime"] = order.ExchOrderTime;
+            ht["AHPlaced"] = "false";
+            ht["DelvIntra"] = "";
+            ht["LastRate"] = "0";
+            ht["LimitPriceforSL"] = "0";
+            ht["TriggerPriceforSL"] = "0";
+            ht["TrailingSL"] = "0";
+            ht["LimitPriceforProfitOrder"] = "0";
+            ht["ISTMOOrder"] = "Y";
+            ht["ISCoverOrder"] = "N";
+            ht["TriggerPriceSLforCoverOrder"] = "0";
+            ht["TrailingSLforCoverOrder"] = "0";
+            
+            ht["TrailingSLForNormalOrder"] = "0";
+            ht["TickSize"] = "0.05";
+            ht["SourceAPP"] = "6";
+            ht["SliceEnable"] = "N";
+
+
+            var array = (from key in ht.AllKeys from value in ht.GetValues(key) select string.Format("{0}={1}", key, value)).ToArray();
+            string orderstring = string.Join("&", array);
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://trade.5paisa.com/Trade/Orders/OrderProceed?" + orderstring),
+                Method = HttpMethod.Post,
+            };
+            var r = httpClient.Send(request);
+            var strResponse = r.Content.ReadAsStringAsync().Result;
+            SessionManager.Instance.AddMessage("*****************Start of Modify Order***************************");
+            SessionManager.Instance.AddMessage(orderstring);
+            SessionManager.Instance.AddMessage("------------------------Modify Order Response---------------------------------");
+            SessionManager.Instance.AddMessage(strResponse);
+            SessionManager.Instance.AddMessage("*****************End of Modify Order***************************");
+        }
+
+        
         private static string GetRequest(TradeCall tradeCall)
         {
             var doff = new DateTimeOffset(DateTime.Today);
@@ -134,7 +223,7 @@ namespace My5Paisa.Models
             ht["OffRate"] = "";
             ht["OrderValue"] = (tradeCall.Price * tradeCall.Qty).ToString();
             ht["ExchOrderID"] = "";
-            ht["ExchOrderTime"] = "%2FDate(" + today + ")% 2F";
+            ht["ExchOrderTime"] = "%2FDate(" + today + ")%2F";
             ht["AHPlaced"] = "false";
             ht["DelvIntra"] = "";
             // ht["LastRate"] = "0";

@@ -1,0 +1,73 @@
+fetch("https://trade.5paisa.com/Trade/Orders/OrderProceed", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "no-cache",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "pragma": "no-cache",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://trade.5paisa.com/trade/home",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "RequestType=P&BuySell=Buy&Symbol=&FullName=ITC&Name=ITC&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=0&TriggerRate=0&IOC=false&ISSL=false&ScripCode=1660&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=true&sProduct=&Validity=0&ValideDate=%2FDate(1611253800000)%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=210.75&OrderValue=210.55&ExchOrderID=&ExchOrderTime=%2FDate(1611300326000)%2F&AHPlaced=false&DelvIntra=&LastRate=210.55&LimitPriceforSL=0&TriggerPriceforSL=205&TrailingSL=0&LimitPriceforProfitOrder=220&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+
+fetch("https://trade.5paisa.com/Trade/Orders/OrderProceed", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "no-cache",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "pragma": "no-cache",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://trade.5paisa.com/trade/home",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "RequestType=M&BuySell=Sell&Symbol=&FullName=ITC&Name=ITC&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=219&TriggerRate=0&IOC=false&ISSL=false&ScripCode=1660&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate(1611253800000)%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=210.30&OffRate=210.45&OrderValue=219&ExchOrderID=1100000011152257&ExchOrderTime=%2FDate(1611300366000)%2F&AHPlaced=false&DelvIntra=&LastRate=210.55&LimitPriceforSL=0&TriggerPriceforSL=0&TrailingSL=0&LimitPriceforProfitOrder=0&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+
+fetch("https://trade.5paisa.com/Trade/Orders/OrderProceed", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "no-cache",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "pragma": "no-cache",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://trade.5paisa.com/trade/home",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "RequestType=M&BuySell=Sell&Symbol=&FullName=ITC&Name=ITC&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=0&TriggerRate=206&IOC=false&ISSL=true&ScripCode=1660&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=true&sProduct=&Validity=0&ValideDate=%2FDate(1611253800000)%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=210.40&OffRate=210.50&OrderValue=210.5&ExchOrderID=1100000011152155&ExchOrderTime=%2FDate(1611300392000)%2F&AHPlaced=false&DelvIntra=&LastRate=210.50&LimitPriceforSL=0&TriggerPriceforSL=0&TrailingSL=0&LimitPriceforProfitOrder=0&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+
+RequestType=M&BuySell=Sell&Symbol=&FullName=ITC&Name=ITC&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=219&TriggerRate=0&IOC=false&ISSL=false&ScripCode=1660&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate(1611253800000)%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=&OrderValue=219&ExchOrderID=1100000011152257&ExchOrderTime=%2FDate(1611300366000)%2F&AHPlaced=false&DelvIntra=&TriggerPriceforSL=0&TrailingSL=0&LimitPriceforProfitOrder=0&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N
+
+
+
+RequestType=M&BuySell=Sell&Symbol=&FullName=ITC&Name=ITC&Category=&Quantity=1&OldOrderNumber=&Exch=N&ExchType=C&Series=&DiscloseQty=0&CurrentPrice=219&TriggerRate=0&IOC=false&ISSL=false&ScripCode=1660&TerminalId=&AfterHrs=false&SLStatus=false&isAtMarket=false&sProduct=&Validity=0&ValideDate=%2FDate(1611253800000)%2F&disableBuySell=false&CallFrom=&currStatus=&TradedQty=0&smotrailsl=&Volume=0&AdvanceBuy=false&BidRate=&OffRate=&OrderValue=219&ExchOrderID=1100000011152257&ExchOrderTime=%2FDate(1611300366000)%2F&AHPlaced=false&DelvIntra=&TriggerPriceforSL=0&TrailingSL=0&LimitPriceforProfitOrder=0&ISTMOOrder=Y&ISCoverOrder=N&TriggerPriceSLforCoverOrder=0&TrailingSLforCoverOrder=0&TriggerRateTMO=0&TrailingSLForNormalOrder=0&TickSize=0.05&SourceAPP=6&SliceEnable=N
+
+
+
+LastRate=210.55
+LimitPriceforSL=0&

@@ -22,7 +22,7 @@ namespace My5Paisa.Models
 
         public static void Execute()
         {
-            if (SessionManager.Instance.IsLive == false)
+            if (SessionManager.Instance.IsLive == false || SessionManager.Instance.IsLocal == true)
                 return;
             bool loggedIn = false;
             foreach (var s in StrategyManager.AllStrategies)

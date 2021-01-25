@@ -15,7 +15,7 @@ namespace My5Paisa.Models
         public int DisClosedQty { get; set; }
         public string Exch { get; set; }
         public string ExchOrderID { get; set; }
-        public DateTime ExchOrderTime { get; set; }
+        public string ExchOrderTime { get; set; }
         public string ExchType { get; set; }
         public int MarketLot { get; set; }
         public int OldorderQty { get; set; }

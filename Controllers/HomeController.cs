@@ -53,6 +53,7 @@ namespace My5Paisa.Controllers
         public static void Execute()
         {
             OrderManager.Execute();
+            
         }
 
         public static void StartMarketFeed()
@@ -96,7 +97,9 @@ namespace My5Paisa.Controllers
 
         public IActionResult Index()
         {
-            // SessionManager.Instance.ScanScripts();
+            var callingUrl = Request.Headers["Referer"].ToString();
+            var isLocal = Url.IsLocalUrl(callingUrl);
+            SessionManager.Instance.IsLocal = isLocal;
             // SessionManager.Instance.AddMessage("Home Page loaded... ");
             return View();
         }
@@ -119,6 +122,12 @@ namespace My5Paisa.Controllers
         {
             StrategyManager.ClearAllTrades();
             return RedirectToAction("Index");
+        }
+
+        public string Balance()
+        {
+            SessionManager.Instance.BalanceOrders();
+            return  "OK";
         }
 
         public IActionResult Nifty50()
